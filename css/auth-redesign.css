@@ -1,0 +1,315 @@
+/* Auth Redesign CSS for Classy Old Money Logic */
+
+:root {
+    --glass-bg: rgba(255, 255, 255, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.8);
+    --glass-blur: blur(24px);
+    --primary-main: #8C7355;      /* Warm Tan/Gold */
+    --primary-dark: #5C4033;      /* Deep Mahogany */
+    --light-bg: #FDFBF7;
+}
+
+body.split-layout {
+    display: flex;
+    height: 100vh;
+    margin: 0;
+    overflow: hidden;
+    background-color: var(--light-bg);
+}
+
+.split-image-side {
+    flex: 1;
+    background-image: url('../assets/images/classy_bg.png');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(92, 64, 51, 0.3) 0%, rgba(255, 255, 255, 0.1) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.brand-showcase {
+    text-align: center;
+    color: #2A2420;
+    max-width: 400px;
+    padding: 40px;
+    backdrop-filter: var(--glass-blur);
+    background: rgba(255, 255, 255, 0.85);
+    border-radius: 32px;
+    border: 1px solid rgba(255,255,255,0.6);
+    box-shadow: 0 20px 40px rgba(92, 64, 51, 0.08);
+    animation: fadeIn 1s ease-out;
+}
+
+.brand-showcase .logo-large {
+    font-size: 80px;
+    margin-bottom: 20px;
+    animation: float 4s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.brand-showcase h2 {
+    font-size: 36px;
+    font-weight: 800;
+    margin-bottom: 16px;
+    background: linear-gradient(135deg, var(--primary-main) 0%, var(--primary-dark) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -0.02em;
+}
+
+.brand-showcase p {
+    font-size: 16px;
+    color: #5A4D41;
+    line-height: 1.6;
+}
+
+.split-form-side {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--light-bg);
+    position: relative;
+    overflow-y: auto;
+}
+
+.split-form-side::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at center, rgba(140, 115, 85, 0.05) 0%, transparent 50%);
+    z-index: 0;
+    pointer-events: none;
+}
+
+.glass-container {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 1);
+    border-radius: 32px;
+    padding: 50px 40px;
+    width: 100%;
+    max-width: 480px;
+    box-shadow: 0 20px 50px rgba(92, 64, 51, 0.1);
+    position: relative;
+    z-index: 1;
+    animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-container .form-header h1 {
+    color: #2A2420;
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+}
+
+.glass-container .form-header p {
+    color: #8B7D6B;
+}
+
+.custom-input-group label {
+    color: #5A4D41;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.custom-input-group input {
+    background: #FDFBF7;
+    border: 1px solid #D5C7B7;
+    color: #2A2420;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.custom-input-group input:focus {
+    background: #fff;
+    border-color: var(--primary-main);
+    box-shadow: 0 0 0 4px rgba(140, 115, 85, 0.1);
+}
+
+.custom-input-group input::placeholder {
+    color: #BAA68F;
+}
+
+.btn-glow {
+    background: linear-gradient(135deg, var(--primary-main), var(--primary-dark));
+    border: none;
+    color: white;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    border-radius: 16px;
+    padding: 16px;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 10px 20px rgba(92, 64, 51, 0.2);
+}
+
+.btn-glow:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 25px rgba(92, 64, 51, 0.3);
+}
+
+.glass-container .login-link {
+    color: #8B7D6B;
+    border-top-color: #E0D5C1;
+}
+
+.glass-container .login-link a {
+    color: var(--primary-main);
+    font-weight: 600;
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@media (max-width: 900px) {
+    body.split-layout {
+        flex-direction: column;
+    }
+    
+    .split-image-side {
+        min-height: 30vh;
+        display: none;
+    }
+    
+    .split-form-side {
+        padding: 20px;
+    }
+}
+
+/* Full Background for Mobile Register */
+body.full-bg {
+    background-image: url('../assets/images/classy_bg.png');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+body.full-bg::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(10px);
+    z-index: 0;
+}
+
+body.full-bg .mobile-container {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    box-shadow: 0 20px 50px rgba(92, 64, 51, 0.1);
+    color: #2A2420;
+    z-index: 1;
+    border-radius: 32px;
+}
+
+body.full-bg .registration-header {
+    background: transparent;
+    border-bottom: 1px solid #E0D5C1;
+}
+
+body.full-bg .registration-header h1 {
+    color: #2A2420;
+    letter-spacing: -0.02em;
+}
+
+body.full-bg .form-step h2 {
+    color: #2A2420;
+}
+
+body.full-bg .step-description {
+    color: #8B7D6B;
+}
+
+body.full-bg .form-group label {
+    color: #5A4D41;
+    font-weight: 600;
+}
+
+body.full-bg .mobile-input-wrapper,
+body.full-bg .form-group input {
+    background: #FDFBF7;
+    border: 1px solid #D5C7B7;
+    color: #2A2420;
+    border-radius: 12px;
+}
+
+body.full-bg .country-code {
+    color: #5A4D41;
+    border-right-color: #D5C7B7;
+}
+
+body.full-bg .mobile-input-wrapper input {
+    color: #2A2420;
+}
+
+body.full-bg .helper-text {
+    color: #8B7D6B;
+}
+
+body.full-bg .role-content {
+    background: rgba(255, 255, 255, 0.6);
+    border-color: #E0D5C1;
+    border-radius: 16px;
+}
+
+body.full-bg .role-text h3 {
+    color: #2A2420;
+}
+
+body.full-bg .role-text p {
+    color: #8B7D6B;
+}
+
+body.full-bg .role-card input[type="radio"]:checked + .role-content {
+    background: rgba(140, 115, 85, 0.05);
+    border-color: var(--primary-main);
+    box-shadow: 0 0 0 2px var(--primary-main);
+}
+
+body.full-bg .progress-step {
+    background: #E0D5C1;
+    color: #8B7D6B;
+}
+
+body.full-bg .progress-step.active {
+    background: linear-gradient(135deg, var(--primary-main), var(--primary-dark));
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(92, 64, 51, 0.3);
+}
+
+body.full-bg .progress-line {
+    background: #E0D5C1;
+}

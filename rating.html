@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rate & Review - GigMatch</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        body {
+            background: var(--bg-primary); /* #FDFBF7 */
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+        }
+
+        .container {
+            background: white;
+            border-radius: 24px;
+            box-shadow: var(--shadow-xl);
+            max-width: 600px;
+            width: 100%;
+            padding: 40px;
+            border: 1px solid var(--border-light);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            transition: opacity 0.2s;
+        }
+
+        .back-link:hover {
+            opacity: 0.8;
+            text-decoration: none;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: var(--text-dark);
+            font-size: 32px;
+            margin-bottom: 8px;
+            letter-spacing: -0.02em;
+        }
+
+        .header p {
+            color: var(--text-light);
+            font-size: 15px;
+        }
+
+        .job-details {
+            background: var(--bg-secondary);
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 25px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .job-details h3 {
+            color: var(--text-dark);
+            font-size: 15px;
+            margin: 0 0 12px 0;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 700;
+        }
+
+        .job-details p {
+            color: var(--text-dark);
+            font-size: 14px;
+            margin: 6px 0;
+        }
+        
+        .job-details strong {
+            color: var(--text-light);
+            font-weight: 500;
+            margin-right: 8px;
+        }
+
+        .rating-section {
+            margin-bottom: 30px;
+        }
+
+        .rating-section h2 {
+            color: var(--text-dark);
+            font-size: 18px;
+            margin-bottom: 15px;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+        }
+
+        .rating-category {
+            margin-bottom: 20px;
+        }
+
+        .rating-category label {
+            display: block;
+            color: var(--text-dark);
+            font-weight: 500;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .stars {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .star {
+            font-size: 32px;
+            cursor: pointer;
+            transition: transform 0.2s, filter 0.2s;
+            filter: grayscale(100%);
+            opacity: 0.3;
+        }
+
+        .star:hover,
+        .star.active {
+            filter: grayscale(0%);
+            opacity: 1;
+            transform: scale(1.15);
+        }
+
+        .rating-value {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 14px;
+            margin-left: 10px;
+            min-width: 40px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            color: var(--text-dark);
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid var(--border-light);
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 15px;
+            resize: vertical;
+            min-height: 120px;
+            transition: all 0.3s;
+            background: white;
+            color: var(--text-dark);
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(140, 115, 85, 0.1);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 16px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 16px 24px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(92, 64, 51, 0.2);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(92, 64, 51, 0.3);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-dark);
+            border: 2px solid var(--border-light);
+        }
+
+        .btn-secondary:hover {
+            background: white;
+            border-color: var(--text-light);
+        }
+
+        .message {
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: none;
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        .error {
+            background: #FEE;
+            color: #C33;
+            border: 1px solid #FCC;
+        }
+
+        .success {
+            background: var(--bg-secondary);
+            color: var(--primary-dark);
+            border: 1px solid var(--border-light);
+        }
+
+        .info-box {
+            background: var(--bg-secondary);
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 13px;
+            color: var(--text-light);
+            margin-top: 20px;
+            line-height: 1.6;
+            border: 1px solid var(--border-light);
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 24px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="javascript:history.back()" class="back-link">← Back</a>
+
+        <div class="header">
+            <h1>⭐ Rate & Review</h1>
+            <p>Share your experience with this job</p>
+        </div>
+
+        <div class="message" id="errorMsg"></div>
+        <div class="message" id="successMsg"></div>
+
+        <div id="ratingForm">
+            <!-- Job Details -->
+            <div class="job-details" id="jobInfo">
+                <h3>Job Details</h3>
+                <p><strong>Title:</strong> <span id="jobTitle"></span></p>
+                <p><strong>Provider:</strong> <span id="providerName"></span></p>
+                <p><strong>Duration:</strong> <span id="jobDuration"></span></p>
+            </div>
+
+            <!-- Main Rating -->
+            <div class="rating-section">
+                <h2>Overall Rating</h2>
+                <div class="rating-category">
+                    <div class="stars" id="overallStars">
+                        <span class="star" data-value="1">⭐</span>
+                        <span class="star" data-value="2">⭐</span>
+                        <span class="star" data-value="3">⭐</span>
+                        <span class="star" data-value="4">⭐</span>
+                        <span class="star" data-value="5">⭐</span>
+                        <span class="rating-value" id="overallValue">0/5</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Category Ratings -->
+            <div class="rating-section">
+                <h2>Category Ratings (Optional)</h2>
+
+                <!-- Communication -->
+                <div class="rating-category">
+                    <label>💬 Communication</label>
+                    <div class="stars" data-category="communication">
+                        <span class="star" data-value="1">⭐</span>
+                        <span class="star" data-value="2">⭐</span>
+                        <span class="star" data-value="3">⭐</span>
+                        <span class="star" data-value="4">⭐</span>
+                        <span class="star" data-value="5">⭐</span>
+                        <span class="rating-value">0/5</span>
+                    </div>
+                </div>
+
+                <!-- Quality -->
+                <div class="rating-category">
+                    <label>✨ Quality</label>
+                    <div class="stars" data-category="quality">
+                        <span class="star" data-value="1">⭐</span>
+                        <span class="star" data-value="2">⭐</span>
+                        <span class="star" data-value="3">⭐</span>
+                        <span class="star" data-value="4">⭐</span>
+                        <span class="star" data-value="5">⭐</span>
+                        <span class="rating-value">0/5</span>
+                    </div>
+                </div>
+
+                <!-- Timeliness -->
+                <div class="rating-category">
+                    <label>⏱️ Timeliness</label>
+                    <div class="stars" data-category="timeliness">
+                        <span class="star" data-value="1">⭐</span>
+                        <span class="star" data-value="2">⭐</span>
+                        <span class="star" data-value="3">⭐</span>
+                        <span class="star" data-value="4">⭐</span>
+                        <span class="star" data-value="5">⭐</span>
+                        <span class="rating-value">0/5</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Review Text -->
+            <div class="form-group">
+                <label>Your Review (Optional)</label>
+                <textarea id="review" placeholder="Share your experience... What did you like? What could be improved?"></textarea>
+            </div>
+
+            <!-- Info -->
+            <div class="info-box">
+                ℹ️ Your feedback helps improve the platform. All reviews are displayed publicly and help other users make informed decisions.
+            </div>
+
+            <!-- Buttons -->
+            <div class="button-group">
+                <button class="btn btn-secondary" onclick="window.history.back()">Cancel</button>
+                <button class="btn btn-primary" id="submitBtn" onclick="submitRating()">Submit Rating</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="js/rating.js"></script>
+
+    <script>
+        // Handle star clicks
+        document.addEventListener('DOMContentLoaded', function() {
+            // Overall rating
+            document.getElementById('overallStars').addEventListener('click', function(e) {
+                if (e.target.classList.contains('star')) {
+                    const value = e.target.dataset.value;
+                    setRating('overall', value);
+                }
+            });
+
+            // Category ratings
+            document.querySelectorAll('.stars[data-category]').forEach(container => {
+                container.addEventListener('click', function(e) {
+                    if (e.target.classList.contains('star')) {
+                        const value = e.target.dataset.value;
+                        const category = this.dataset.category;
+                        setRating(category, value);
+                    }
+                });
+            });
+
+            initializeRatingForm();
+        });
+
+        function setRating(category, value) {
+            const container = category === 'overall' 
+                ? document.getElementById('overallStars')
+                : document.querySelector(`[data-category="${category}"]`);
+
+            // Update stars
+            container.querySelectorAll('.star').forEach(star => {
+                if (star.dataset.value <= value) {
+                    star.classList.add('active');
+                } else {
+                    star.classList.remove('active');
+                }
+            });
+
+            // Update value display
+            const valueDisplay = container.querySelector('.rating-value');
+            if (valueDisplay) {
+                valueDisplay.textContent = value + '/5';
+            }
+
+            // Store in data attribute
+            container.dataset.rating = value;
+        }
+    </script>
+</body>
+</html>

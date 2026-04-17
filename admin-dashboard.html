@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - GigMatch</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #f0f2f5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .admin-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .admin-header h1 {
+            font-size: 28px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .admin-header .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .admin-container {
+            max-width: 1400px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+            flex-wrap: wrap;
+        }
+
+        .nav-tab {
+            padding: 12px 20px;
+            background: white;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            color: #666;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+            border-radius: 6px 6px 0 0;
+            margin-bottom: -2px;
+        }
+
+        .nav-tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+            background: #f9f9f9;
+        }
+
+        .nav-tab:hover {
+            color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border-left: 4px solid #667eea;
+        }
+
+        .stat-card .number {
+            font-size: 32px;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .stat-card .label {
+            font-size: 13px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .filters-bar {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .filter-group label {
+            font-weight: 600;
+            font-size: 13px;
+            color: #333;
+            text-transform: uppercase;
+        }
+
+        .filter-group select,
+        .filter-group input {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 13px;
+        }
+
+        .data-table {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #f5f5f5;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #333;
+            font-size: 13px;
+            text-transform: uppercase;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 13px;
+        }
+
+        tr:hover {
+            background: #f9f9f9;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .badge-open {
+            background: #ffd4d4;
+            color: #d32f2f;
+        }
+
+        .badge-review {
+            background: #fff3cd;
+            color: #F57F17;
+        }
+
+        .badge-resolved {
+            background: #c8e6c9;
+            color: #2e7d32;
+        }
+
+        .badge-closed {
+            background: #e0e0e0;
+            color: #666;
+        }
+
+        .badge-active {
+            background: #c8e6c9;
+            color: #2e7d32;
+        }
+
+        .badge-paused {
+            background: #e0e0e0;
+            color: #666;
+        }
+
+        .badge-worker {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+
+        .badge-employer {
+            background: #f3e5f5;
+            color: #6a1b9a;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-view {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-view:hover {
+            background: #5568d3;
+        }
+
+        .btn-action {
+            background: #4caf50;
+            color: white;
+        }
+
+        .btn-action:hover {
+            background: #45a049;
+        }
+
+        .btn-danger {
+            background: #f44336;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #da190b;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+
+        .empty-state .icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            max-width: 600px;
+            width: 90%;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            margin: 20px;
+        }
+
+        .modal-header {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .modal-body {
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        @media (max-width: 768px) {
+            .admin-header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filters-bar {
+                flex-direction: column;
+            }
+
+            .table-container {
+                font-size: 12px;
+            }
+
+            td, th {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Admin Header -->
+    <div class="admin-header">
+        <h1>⚙️ Admin Dashboard</h1>
+        <div class="user-info">
+            <div>
+                <div id="adminName" style="font-weight: 600;">Admin</div>
+                <div style="font-size: 12px; opacity: 0.9;" id="adminEmail"></div>
+            </div>
+            <button class="logout-btn" onclick="adminLogout()">Logout</button>
+        </div>
+    </div>
+
+    <div class="admin-container">
+        <!-- Navigation Tabs -->
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="switchTab(event, 'overview')">📊 Overview</button>
+            <button class="nav-tab" onclick="switchTab(event, 'complaints')">🚨 Complaints</button>
+            <button class="nav-tab" onclick="switchTab(event, 'users')">👥 Users</button>
+            <button class="nav-tab" onclick="switchTab(event, 'jobs')">💼 Jobs</button>
+        </div>
+
+        <!-- OVERVIEW TAB -->
+        <div id="overview" class="tab-content active">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="number" id="totalUsers">0</div>
+                    <div class="label">Total Users</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number" id="totalJobs">0</div>
+                    <div class="label">Total Jobs</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number" id="totalComplaints">0</div>
+                    <div class="label">Total Complaints</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number" id="activeJobs">0</div>
+                    <div class="label">Active Jobs</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number" id="openComplaints">0</div>
+                    <div class="label">Open Complaints</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number" id="totalWorkers">0</div>
+                    <div class="label">Workers</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number" id="totalEmployers">0</div>
+                    <div class="label">Employers</div>
+                </div>
+            </div>
+
+            <h3 style="color: #333; margin-top: 30px; margin-bottom: 15px;">📈 Recent Activity</h3>
+            <div class="data-table">
+                <div style="padding: 20px; text-align: center; color: #999;">
+                    Loading recent activity...
+                </div>
+            </div>
+        </div>
+
+        <!-- COMPLAINTS TAB -->
+        <div id="complaints" class="tab-content">
+            <div class="filters-bar">
+                <div class="filter-group">
+                    <label>Status:</label>
+                    <select id="complaintStatusFilter" onchange="loadComplaints()">
+                        <option value="">All</option>
+                        <option value="open">Open</option>
+                        <option value="under_review">Under Review</option>
+                        <option value="resolved">Resolved</option>
+                        <option value="closed">Closed</option>
+                    </select>
+                </div>
+                <button class="btn-sm btn-view" onclick="loadComplaints()">Refresh</button>
+            </div>
+
+            <div class="data-table">
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Reason</th>
+                                <th>Filer</th>
+                                <th>Against</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="complaintsTable">
+                            <tr>
+                                <td colspan="6" style="text-align: center; padding: 40px; color: #999;">
+                                    Loading complaints...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- USERS TAB -->
+        <div id="users" class="tab-content">
+            <div class="filters-bar">
+                <div class="filter-group">
+                    <label>Type:</label>
+                    <select id="userTypeFilter" onchange="loadUsers()">
+                        <option value="">All Users</option>
+                        <option value="worker">Workers</option>
+                        <option value="employer">Employers</option>
+                    </select>
+                </div>
+                <button class="btn-sm btn-view" onclick="loadUsers()">Refresh</button>
+            </div>
+
+            <div class="data-table">
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Type</th>
+                                <th>Joined</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTable">
+                            <tr>
+                                <td colspan="6" style="text-align: center; padding: 40px; color: #999;">
+                                    Loading users...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- JOBS TAB -->
+        <div id="jobs" class="tab-content">
+            <div class="filters-bar">
+                <div class="filter-group">
+                    <label>Status:</label>
+                    <select id="jobStatusFilter" onchange="loadJobs()">
+                        <option value="">All Jobs</option>
+                        <option value="active">Active</option>
+                        <option value="paused">Paused</option>
+                        <option value="completed">Completed</option>
+                    </select>
+                </div>
+                <button class="btn-sm btn-view" onclick="loadJobs()">Refresh</button>
+            </div>
+
+            <div class="data-table">
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Employer</th>
+                                <th>Category</th>
+                                <th>Rate</th>
+                                <th>Applications</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="jobsTable">
+                            <tr>
+                                <td colspan="7" style="text-align: center; padding: 40px; color: #999;">
+                                    Loading jobs...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detail Modal -->
+    <div class="modal" id="detailModal">
+        <div class="modal-content">
+            <div class="modal-header" id="modalTitle"></div>
+            <div class="modal-body" id="modalBody"></div>
+            <div class="modal-footer">
+                <button class="btn-sm btn-view" onclick="closeModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { auth, db, waitForFirebase, getDoc, doc, getDocs, collection, query, where, orderBy, updateDoc, Timestamp, signOut, onAuthStateChanged } from './js/firebase-config.js';
+
+        let currentUser = null;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', async () => {
+            await waitForFirebase();
+            
+            onAuthStateChanged(auth, async (user) => {
+                if (!user) {
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                // Check if user is admin
+                const userDoc = await getDoc(doc(db, 'users', user.uid));
+                const userData = userDoc.data();
+
+                if (userData?.role !== 'admin') {
+                    document.body.innerHTML = `
+                        <div style="display: flex; align-items: center; justify-content: center; height: 100vh;">
+                            <div style="text-align: center;">
+                                <h1>Access Denied</h1>
+                                <p>You do not have permission to access this page.</p>
+                                <a href="dashboard.html" style="color: #667eea; text-decoration: none;">← Back to Dashboard</a>
+                            </div>
+                        </div>
+                    `;
+                    return;
+                }
+
+                currentUser = user;
+                document.getElementById('adminName').textContent = userData.fullName || 'Admin';
+                document.getElementById('adminEmail').textContent = user.email;
+
+                // Load initial data
+                await loadOverview();
+            });
+        });
+
+        window.switchTab = function(e, tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            e.target.classList.add('active');
+
+            // Load data for tab
+            if (tabName === 'complaints') loadComplaints();
+            else if (tabName === 'users') loadUsers();
+            else if (tabName === 'jobs') loadJobs();
+        };
+
+        // OVERVIEW
+        async function loadOverview() {
+            try {
+                const usersSnapshot = await getDocs(collection(db, 'users'));
+                const jobsSnapshot = await getDocs(collection(db, 'jobs'));
+                const complaintsSnapshot = await getDocs(collection(db, 'complaints'));
+
+                let workers = 0, employers = 0;
+                usersSnapshot.forEach(doc => {
+                    const user = doc.data();
+                    if (user.userType === 'worker') workers++;
+                    else if (user.userType === 'employer') employers++;
+                });
+
+                let activeJobs = 0;
+                jobsSnapshot.forEach(doc => {
+                    if (doc.data().status === 'active') activeJobs++;
+                });
+
+                let openComplaints = 0;
+                complaintsSnapshot.forEach(doc => {
+                    if (doc.data().status === 'open') openComplaints++;
+                });
+
+                document.getElementById('totalUsers').textContent = usersSnapshot.size;
+                document.getElementById('totalWorkers').textContent = workers;
+                document.getElementById('totalEmployers').textContent = employers;
+                document.getElementById('totalJobs').textContent = jobsSnapshot.size;
+                document.getElementById('activeJobs').textContent = activeJobs;
+                document.getElementById('totalComplaints').textContent = complaintsSnapshot.size;
+                document.getElementById('openComplaints').textContent = openComplaints;
+
+            } catch (error) {
+                console.error('Error loading overview:', error);
+            }
+        }
+
+        // COMPLAINTS
+        window.loadComplaints = async function() {
+            try {
+                const statusFilter = document.getElementById('complaintStatusFilter').value;
+                let q = query(collection(db, 'complaints'), orderBy('createdAt', 'desc'));
+                
+                if (statusFilter) {
+                    q = query(collection(db, 'complaints'), where('status', '==', statusFilter), orderBy('createdAt', 'desc'));
+                }
+
+                const snapshot = await getDocs(q);
+                const tbody = document.getElementById('complaintsTable');
+
+                if (snapshot.empty) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 20px; color: #999;">No complaints found</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = snapshot.docs.map(doc => {
+                    const data = doc.data();
+                    const date = data.createdAt?.toDate?.() || new Date();
+                    const statusClass = `badge-${data.status.replace(/_/g, '-')}`;
+
+                    return `
+                        <tr>
+                            <td>${escapeHtml(data.reason.replace(/_/g, ' '))}</td>
+                            <td>${escapeHtml(data.filerName || 'Anonymous')}</td>
+                            <td>${escapeHtml(data.defendantName || 'User')}</td>
+                            <td><span class="status-badge ${statusClass}">${data.status}</span></td>
+                            <td>${date.toLocaleDateString()}</td>
+                            <td>
+                                <button class="btn-sm btn-view" onclick="viewComplaint('${doc.id}')">View</button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+
+            } catch (error) {
+                console.error('Error loading complaints:', error);
+            }
+        };
+
+        window.viewComplaint = async function(id) {
+            try {
+                const doc_ref = doc(db, 'complaints', id);
+                const snapshot = await getDoc(doc_ref);
+                const data = snapshot.data();
+
+                const date = data.createdAt?.toDate?.() || new Date();
+                const modalTitle = document.getElementById('modalTitle');
+                const modalBody = document.getElementById('modalBody');
+
+                modalTitle.textContent = `Complaint - ${data.reason}`;
+                modalBody.innerHTML = `
+                    <strong>Status:</strong> <span style="color: #667eea;">${data.status}</span><br>
+                    <strong>Filer:</strong> ${escapeHtml(data.filerName)} (${escapeHtml(data.filerEmail)})<br>
+                    <strong>Against:</strong> ${escapeHtml(data.defendantName)}<br>
+                    <strong>Date:</strong> ${date.toLocaleString()}<br>
+                    <strong>Reason:</strong> ${escapeHtml(data.reason)}<br><br>
+                    <strong>Description:</strong><br>
+                    <div style="background: #f9f9f9; padding: 10px; border-radius: 4px; margin: 10px 0;">
+                        ${escapeHtml(data.description)}
+                    </div>
+                    ${data.adminNotes ? `<strong>Admin Notes:</strong><br><div style="background: #f9f9f9; padding: 10px; border-radius: 4px;">${escapeHtml(data.adminNotes)}</div>` : ''}
+                `;
+
+                document.getElementById('detailModal').classList.add('active');
+
+            } catch (error) {
+                console.error('Error viewing complaint:', error);
+            }
+        };
+
+        // USERS
+        window.loadUsers = async function() {
+            try {
+                const typeFilter = document.getElementById('userTypeFilter').value;
+                let q = query(collection(db, 'users'));
+                
+                if (typeFilter) {
+                    q = query(collection(db, 'users'), where('userType', '==', typeFilter));
+                }
+
+                const snapshot = await getDocs(q);
+                const tbody = document.getElementById('usersTable');
+
+                if (snapshot.empty) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 20px; color: #999;">No users found</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = snapshot.docs.map(doc => {
+                    const data = doc.data();
+                    const date = data.createdAt?.toDate?.() || new Date();
+                    const typeClass = `badge-${data.userType}`;
+
+                    return `
+                        <tr>
+                            <td>${escapeHtml(data.fullName || 'N/A')}</td>
+                            <td>${escapeHtml(data.email)}</td>
+                            <td><span class="status-badge ${typeClass}">${data.userType}</span></td>
+                            <td>${date.toLocaleDateString()}</td>
+                            <td><span class="status-badge badge-active">Active</span></td>
+                            <td>
+                                <button class="btn-sm btn-view" onclick="viewUser('${doc.id}')">View</button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+
+            } catch (error) {
+                console.error('Error loading users:', error);
+            }
+        };
+
+        window.viewUser = async function(id) {
+            try {
+                const doc_ref = doc(db, 'users', id);
+                const snapshot = await getDoc(doc_ref);
+                const data = snapshot.data();
+                const date = data.createdAt?.toDate?.() || new Date();
+
+                const modalTitle = document.getElementById('modalTitle');
+                const modalBody = document.getElementById('modalBody');
+
+                modalTitle.textContent = data.fullName;
+                modalBody.innerHTML = `
+                    <strong>Email:</strong> ${escapeHtml(data.email)}<br>
+                    <strong>Type:</strong> ${data.userType}<br>
+                    <strong>Joined:</strong> ${date.toLocaleString()}<br>
+                    <strong>Bio:</strong> ${escapeHtml(data.bio || 'N/A')}<br>
+                    <strong>Location:</strong> ${escapeHtml(data.location || 'N/A')}<br>
+                `;
+
+                document.getElementById('detailModal').classList.add('active');
+
+            } catch (error) {
+                console.error('Error viewing user:', error);
+            }
+        };
+
+        // JOBS
+        window.loadJobs = async function() {
+            try {
+                const statusFilter = document.getElementById('jobStatusFilter').value;
+                let q = query(collection(db, 'jobs'));
+                
+                if (statusFilter) {
+                    q = query(collection(db, 'jobs'), where('status', '==', statusFilter));
+                }
+
+                const snapshot = await getDocs(q);
+                const tbody = document.getElementById('jobsTable');
+
+                if (snapshot.empty) {
+                    tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 20px; color: #999;">No jobs found</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = snapshot.docs.map(doc => {
+                    const data = doc.data();
+                    const statusClass = `badge-${data.status}`;
+
+                    return `
+                        <tr>
+                            <td>${escapeHtml(data.title)}</td>
+                            <td>${escapeHtml(data.employerName)}</td>
+                            <td>${data.category}</td>
+                            <td>₹${data.hourlyRate}</td>
+                            <td>${data.applicationsCount || 0}</td>
+                            <td><span class="status-badge ${statusClass}">${data.status}</span></td>
+                            <td>
+                                <button class="btn-sm btn-view" onclick="viewJob('${doc.id}')">View</button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+
+            } catch (error) {
+                console.error('Error loading jobs:', error);
+            }
+        };
+
+        window.viewJob = async function(id) {
+            try {
+                const doc_ref = doc(db, 'jobs', id);
+                const snapshot = await getDoc(doc_ref);
+                const data = snapshot.data();
+
+                const modalTitle = document.getElementById('modalTitle');
+                const modalBody = document.getElementById('modalBody');
+
+                modalTitle.textContent = data.title;
+                modalBody.innerHTML = `
+                    <strong>Employer:</strong> ${escapeHtml(data.employerName)}<br>
+                    <strong>Category:</strong> ${data.category}<br>
+                    <strong>Rate:</strong> ₹${data.hourlyRate}/hour<br>
+                    <strong>Duration:</strong> ${data.duration}<br>
+                    <strong>Location:</strong> ${escapeHtml(data.location)}<br>
+                    <strong>Applications:</strong> ${data.applicationsCount || 0}<br>
+                    <strong>Status:</strong> ${data.status}<br><br>
+                    <strong>Description:</strong><br>
+                    <div style="background: #f9f9f9; padding: 10px; border-radius: 4px;">
+                        ${escapeHtml(data.description)}
+                    </div>
+                `;
+
+                document.getElementById('detailModal').classList.add('active');
+
+            } catch (error) {
+                console.error('Error viewing job:', error);
+            }
+        };
+
+        window.closeModal = function() {
+            document.getElementById('detailModal').classList.remove('active');
+        };
+
+        window.adminLogout = async function() {
+            if (confirm('Are you sure you want to logout?')) {
+                await signOut(auth);
+                window.location.href = 'login.html';
+            }
+        };
+
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return String(text).replace(/[&<>"']/g, m => map[m]);
+        }
+    </script>
+</body>
+</html>

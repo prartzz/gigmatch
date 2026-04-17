@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>🌱 Seed Test Jobs</title>
+    <style>
+        body { font-family: Arial; padding: 40px; max-width: 600px; margin: 0 auto; }
+        button { padding: 12px 20px; background: #667eea; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; }
+        button:hover { background: #764ba2; }
+        .log { background: #f5f5f5; padding: 20px; border-radius: 8px; margin-top: 20px; font-family: monospace; height: 300px; overflow: auto; }
+        .success { color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <h1>🌱 Create Test Jobs</h1>
+    <p>Click below to create 5 sample jobs in Firestore for testing the discover jobs feature.</p>
+    
+    <button onclick="createTestJobs()">Create Test Jobs</button>
+    
+    <div class="log" id="log"></div>
+
+    <script type="module">
+        import { db } from './js/firebase-config.js';
+        import { collection, addDoc, Timestamp } from 'https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js';
+
+        const testJobs = [
+            {
+                title: "Website Design & Development",
+                description: "Looking for experienced web developer to create a responsive website with modern design. Project includes frontend development, backend integration, and deployment.",
+                category: "IT",
+                hourlyRate: 500,
+                location: "Bangalore",
+                duration: "one-week",
+                requiredSkills: ["HTML", "CSS", "React", "JavaScript"],
+                status: "active",
+                employerName: "Tech Startup India",
+                employerId: "test-employer-1",
+                applicationsCount: 0,
+                views: 0
+            },
+            {
+                title: "Mobile App Development",
+                description: "We need a React Native mobile app developed for iOS and Android. The app should include user authentication, database integration, and third-party API integration.",
+                category: "IT",
+                hourlyRate: 750,
+                location: "Mumbai",
+                duration: "few-days",
+                requiredSkills: ["React Native", "JavaScript", "Firebase"],
+                status: "active",
+                employerName: "Mobile Solutions Inc",
+                employerId: "test-employer-2",
+                applicationsCount: 0,
+                views: 0
+            },
+            {
+                title: "Office Cleaning Service",
+                description: "Daily office cleaning required for a 5000 sq ft corporate office. Need experienced cleaning professionals who can work during evening hours after office closes.",
+                category: "Cleaning",
+                hourlyRate: 150,
+                location: "Pune",
+                duration: "ongoing",
+                requiredSkills: ["Cleaning", "Organization", "Time Management"],
+                status: "active",
+                employerName: "Corporate Facilities",
+                employerId: "test-employer-3",
+                applicationsCount: 0,
+                views: 0
+            },
+            {
+                title: "Home Interior Painting",
+                description: "Need professional painters for 3-bedroom house interior painting. Need expertise in wall preparation, paint selection, and finishing. Timeline: 1 week.",
+                category: "Construction",
+                hourlyRate: 300,
+                location: "Delhi",
+                duration: "one-week",
+                requiredSkills: ["Painting", "Interior Design", "Color Selection"],
+                status: "active",
+                employerName: "Home Renovation Express",
+                employerId: "test-employer-4",
+                applicationsCount: 0,
+                views: 0
+            },
+            {
+                title: "Content Writing - Tech Blog",
+                description: "Looking for experienced content writers to write technical blog posts about web development, AI, and cloud computing. 4-5 articles per week. Must have technical background.",
+                category: "Writing",
+                hourlyRate: 400,
+                location: "Remote",
+                duration: "ongoing",
+                requiredSkills: ["Writing", "SEO", "Technical Knowledge"],
+                status: "active",
+                employerName: "Tech Media Hub",
+                employerId: "test-employer-5",
+                applicationsCount: 0,
+                views: 0
+            }
+        ];
+
+        window.createTestJobs = async function() {
+            const logDiv = document.getElementById('log');
+            logDiv.innerHTML = '';
+            
+            const log = (msg, type = 'normal') => {
+                const p = document.createElement('div');
+                p.textContent = msg;
+                if (type === 'success') p.className = 'success';
+                if (type === 'error') p.className = 'error';
+                logDiv.appendChild(p);
+                logDiv.scrollTop = logDiv.scrollHeight;
+                console.log(msg);
+            };
+
+            log('🌱 Starting to create test jobs...', 'normal');
+            
+            try {
+                for (const job of testJobs) {
+                    const jobWithTimestamp = {
+                        ...job,
+                        createdAt: Timestamp.now(),
+                        updatedAt: Timestamp.now()
+                    };
+                    
+                    const docRef = await addDoc(collection(db, 'jobs'), jobWithTimestamp);
+                    log(`✅ Created: "${job.title}" (ID: ${docRef.id})`, 'success');
+                    
+                    // Add small delay to avoid rate limiting
+                    await new Promise(resolve => setTimeout(resolve, 300));
+                }
+                
+                log('', 'normal');
+                log('✨ All 5 test jobs created successfully!', 'success');
+                log('Now go to: http://localhost:8000/jobs-discover.html', 'success');
+            } catch (error) {
+                log(`❌ Error: ${error.message}`, 'error');
+                console.error('Full error:', error);
+            }
+        };
+    </script>
+</body>
+</html>

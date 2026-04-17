@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GigMatch - Post a Job</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .job-post-container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .form-header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .form-header p {
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-dark);
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .help-text {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-top: 6px;
+        }
+
+        .skills-input {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .skills-input input {
+            flex: 1;
+        }
+
+        .skills-input button {
+            padding: 12px 16px;
+            background: var(--primary);
+            border: none;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .skills-input button:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .skills-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .skill-tag {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .skill-tag button {
+            background: rgba(255, 255, 255, 0.3);
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 0 4px;
+            border-radius: 50%;
+            font-size: 14px;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .skill-tag button:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .form-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 14px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .error-message {
+            background: #fed7d7;
+            color: #742a2a;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #fc8181;
+        }
+
+        .success-message {
+            background: #c6f6d5;
+            color: #22543d;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #68d391;
+        }
+
+        @media (max-width: 600px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .form-actions {
+                grid-template-columns: 1fr;
+            }
+
+            .job-post-container {
+                padding: 16px;
+            }
+
+            .form-header h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body style="background: #f7fafc;">
+    <nav style="display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; background: white; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);">
+        <h1 style="margin: 0; font-size: 20px;">💼 GigMatch</h1>
+        <a href="dashboard.html" style="color: var(--primary); text-decoration: none; font-weight: 600;">← Back to Dashboard</a>
+    </nav>
+
+    <div class="job-post-container">
+        <div class="form-header">
+            <h1>Post a New Job</h1>
+            <p>Find the right worker for your project</p>
+        </div>
+
+        <div id="messageContainer"></div>
+
+        <form id="jobPostForm">
+            <div class="form-group">
+                <label for="jobTitle">Job Title *</label>
+                <input type="text" id="jobTitle" placeholder="e.g., House Cleaning, Website Design" required>
+                <div class="help-text">Be clear and descriptive (30 characters min)</div>
+            </div>
+
+            <div class="form-group">
+                <label for="jobDescription">Job Description *</label>
+                <textarea id="jobDescription" placeholder="Describe the job, expectations, and any special requirements..." required></textarea>
+                <div class="help-text">Include details about the work, timeline, and any specific requirements</div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="hourlyRate">Hourly Rate (₹) *</label>
+                    <input type="number" id="hourlyRate" placeholder="500" min="100" required>
+                    <div class="help-text">Enter the hourly rate for this job</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="location">Location *</label>
+                    <input type="text" id="location" placeholder="e.g., Mumbai, Delhi" required>
+                    <div class="help-text">Where will the work be done?</div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="category">Category *</label>
+                    <select id="category" required>
+                        <option value="">Select a category</option>
+                        <option value="cleaning">Cleaning Services</option>
+                        <option value="construction">Construction</option>
+                        <option value="repair">Repair & Maintenance</option>
+                        <option value="design">Design</option>
+                        <option value="coding">Coding & Development</option>
+                        <option value="content">Content Writing</option>
+                        <option value="tutoring">Tutoring</option>
+                        <option value="delivery">Delivery</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="duration">Expected Duration *</label>
+                    <select id="duration" required>
+                        <option value="">Select duration</option>
+                        <option value="same-day">Same Day</option>
+                        <option value="one-day">1 Day</option>
+                        <option value="few-days">Few Days</option>
+                        <option value="one-week">1 Week</option>
+                        <option value="ongoing">Ongoing</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Required Skills *</label>
+                <div class="skills-input">
+                    <input type="text" id="skillInput" placeholder="Add a skill (e.g., Plumbing, HTML, etc)">
+                    <button type="button" onclick="addSkill()">Add</button>
+                </div>
+                <div class="skills-tags" id="skillsTags"></div>
+                <div class="help-text">Add skills required for this job (minimum 1)</div>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" onclick="window.location.href='dashboard.html'">Cancel</button>
+                <button type="submit" class="btn btn-primary">Post Job</button>
+            </form-actions>
+        </form>
+    </div>
+
+    <script type="module" src="js/job-post.js"></script>
+</body>
+</html>

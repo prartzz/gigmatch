@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GigMatch - Mobile Registration</title>
+    <link rel="stylesheet" href="css/mobile-register.css">
+    <link rel="stylesheet" href="css/auth-redesign.css">
+</head>
+<body class="full-bg">
+    <div class="mobile-container glass-container">
+        <!-- Header -->
+        <header class="registration-header">
+            <h1>GigMatch</h1>
+            <p>Create your account</p>
+        </header>
+
+        <!-- Registration Form -->
+        <form id="registrationForm" class="registration-form">
+            
+            <!-- Step 1: Mobile Number -->
+            <div class="form-step" id="step1">
+                <h2>Phone Verification</h2>
+                <p class="step-description">Enter your mobile number to get started</p>
+                
+                <div class="form-group">
+                    <label for="mobileNumber">Mobile Number</label>
+                    <div class="mobile-input-wrapper">
+                        <span class="country-code">+91</span>
+                        <input 
+                            type="tel" 
+                            id="mobileNumber" 
+                            placeholder="Enter 10-digit number" 
+                            maxlength="10"
+                            required
+                        >
+                    </div>
+                    <small class="helper-text">We'll send an OTP to verify your number</small>
+                </div>
+
+                <button type="button" id="sendOtpBtn" class="btn btn-primary btn-block">
+                    Send OTP
+                </button>
+
+                <p class="login-link">
+                    Already have an account? <a href="login.html">Login</a>
+                </p>
+            </div>
+
+            <!-- Step 2: OTP Verification -->
+            <div class="form-step hidden" id="step2">
+                <h2>Verify OTP</h2>
+                <p class="step-description">Enter the 6-digit code sent to your mobile</p>
+
+                <div class="form-group">
+                    <label for="otpInput">OTP Code</label>
+                    <input 
+                        type="text" 
+                        id="otpInput" 
+                        placeholder="000000" 
+                        maxlength="6"
+                        inputmode="numeric"
+                    >
+                    <small class="helper-text">Didn't receive? <a href="#" id="resendOtpLink">Resend OTP</a></small>
+                </div>
+
+                <button type="button" id="verifyOtpBtn" class="btn btn-primary btn-block">
+                    Verify OTP
+                </button>
+
+                <button type="button" id="backToPhone" class="btn btn-secondary btn-block">
+                    Change Number
+                </button>
+            </div>
+
+            <!-- Step 3: Role Selection -->
+            <div class="form-step hidden" id="step3">
+                <h2>Select Your Role</h2>
+                <p class="step-description">Choose how you want to use GigMatch</p>
+
+                <div class="role-selection">
+                    <label class="role-card">
+                        <input type="radio" name="userRole" value="worker" required>
+                        <div class="role-content">
+                            <div class="role-icon">💼</div>
+                            <h3>Worker</h3>
+                            <p>Find and complete gigs to earn money</p>
+                        </div>
+                    </label>
+
+                    <label class="role-card">
+                        <input type="radio" name="userRole" value="employer" required>
+                        <div class="role-content">
+                            <div class="role-icon">🏢</div>
+                            <h3>Employer</h3>
+                            <p>Post jobs and hire skilled workers</p>
+                        </div>
+                    </label>
+
+                    <label class="role-card">
+                        <input type="radio" name="userRole" value="admin" required>
+                        <div class="role-content">
+                            <div class="role-icon">⚙️</div>
+                            <h3>Admin</h3>
+                            <p>Manage platform and resolve disputes</p>
+                        </div>
+                    </label>
+                </div>
+
+                <button type="button" id="nextToEmail" class="btn btn-primary btn-block">
+                    Continue
+                </button>
+
+                <button type="button" id="backToOtp" class="btn btn-secondary btn-block">
+                    Back
+                </button>
+            </div>
+
+            <!-- Step 4: Email & Password -->
+            <div class="form-step hidden" id="step4">
+                <h2>Create Password</h2>
+                <p class="step-description">Set up your account credentials</p>
+
+                <div class="form-group">
+                    <label for="fullName">Full Name</label>
+                    <input 
+                        type="text" 
+                        id="fullName" 
+                        placeholder="Your full name" 
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        placeholder="your@email.com" 
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        placeholder="Enter strong password" 
+                        required
+                    >
+                    <small class="helper-text">At least 8 characters with uppercase, number</small>
+                </div>
+
+                <!-- Admin Code Field (shown only for admins) -->
+                <div class="form-group" id="adminCodeGroup" style="display: none;">
+                    <label for="adminCode">Admin Code</label>
+                    <input 
+                        type="password" 
+                        id="adminCode" 
+                        placeholder="Enter admin verification code" 
+                    >
+                    <small class="helper-text">Required for admin account creation</small>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block btn-large">
+                    Create Account
+                </button>
+
+                <button type="button" id="backToRole" class="btn btn-secondary btn-block">
+                    Back
+                </button>
+            </div>
+
+        </form>
+
+        <!-- Progress Indicator -->
+        <div class="progress-indicator">
+            <div class="progress-step active" id="prog1">
+                <span>1</span>
+            </div>
+            <div class="progress-line"></div>
+            <div class="progress-step" id="prog2">
+                <span>2</span>
+            </div>
+            <div class="progress-line"></div>
+            <div class="progress-step" id="prog3">
+                <span>3</span>
+            </div>
+            <div class="progress-line"></div>
+            <div class="progress-step" id="prog4">
+                <span>4</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- reCAPTCHA Container for Phone Authentication -->
+    <div id="recaptcha-container" style="margin: 20px 0;"></div>
+
+    <script src="https://www.google.com/recaptcha/api.js"></script>
+    <script type="module" src="js/mobile-register.js"></script>
+</body>
+</html>

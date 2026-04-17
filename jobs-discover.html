@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GigMatch - Discover Jobs</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <!-- Leaflet CSS for Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <style>
+        .discover-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .discover-header {
+            margin-bottom: 30px;
+        }
+
+        .discover-header h1 {
+            font-size: 32px;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .discover-header p {
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        .discover-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 24px;
+        }
+
+        .filters-panel {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            height: fit-content;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+            position: sticky;
+            top: 20px;
+        }
+
+        .filters-panel h3 {
+            font-size: 18px;
+            margin-bottom: 16px;
+            color: var(--text-dark);
+        }
+
+        .filter-group {
+            margin-bottom: 24px;
+        }
+
+        .filter-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #a0aec0;
+            margin-bottom: 12px;
+        }
+
+        .filter-group input,
+        .filter-group select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .filter-group input:focus,
+        .filter-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .filter-checkbox {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            cursor: pointer;
+        }
+
+        .filter-checkbox input {
+            width: auto;
+            margin-right: 8px;
+            cursor: pointer;
+        }
+
+        .filter-checkbox label {
+            font-size: 14px;
+            margin: 0;
+            text-transform: none;
+            color: var(--text-dark);
+            cursor: pointer;
+            font-weight: normal;
+        }
+
+        .filter-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .jobs-section {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .jobs-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .jobs-count {
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        .sort-dropdown {
+            padding: 8px 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .job-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border-left: 4px solid transparent;
+        }
+
+        .job-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+            border-left-color: var(--primary);
+        }
+
+        .job-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 12px;
+        }
+
+        .job-card-title {
+            flex: 1;
+        }
+
+        .job-card-title h3 {
+            font-size: 18px;
+            margin: 0 0 4px 0;
+            color: var(--text-dark);
+        }
+
+        .job-card-title p {
+            margin: 0;
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .job-card-rate {
+            text-align: right;
+        }
+
+        .rate {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .rate-period {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .job-card-description {
+            color: var(--text-dark);
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 12px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        .job-card-meta {
+            display: flex;
+            gap: 16px;
+            font-size: 13px;
+            color: var(--text-light);
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .job-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .job-skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .job-skill-tag {
+            background: #edf2f7;
+            color: var(--primary);
+            padding: 4px 10px;
+            border-radius: 16px;
+            font-size: 12px;
+        }
+
+        .job-card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 12px;
+        }
+
+        .employer-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+        }
+
+        .employer-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .apply-btn {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .apply-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .no-jobs {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-light);
+        }
+
+        .no-jobs-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .loading-spinner {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 300px;
+        }
+
+        @media (max-width: 768px) {
+            .discover-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .filters-panel {
+                position: static;
+            }
+
+            .discover-header h1 {
+                font-size: 24px;
+            }
+
+            .job-card-header {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .job-card-rate {
+                text-align: left;
+            }
+        }
+    </style>
+</head>
+<body style="background: #f7fafc;">
+    <nav style="display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; background: white; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);">
+        <h1 style="margin: 0; font-size: 20px;">💼 GigMatch</h1>
+        <a href="dashboard.html" style="color: var(--primary); text-decoration: none; font-weight: 600;">← Back to Dashboard</a>
+    </nav>
+
+    <div class="discover-container">
+        <div class="discover-header">
+            <h1>Discover Jobs</h1>
+            <p>Find gigs that match your skills and schedule</p>
+        </div>
+
+        <div class="discover-layout">
+            <div class="filters-panel">
+                <h3>Filters</h3>
+
+                <div class="filter-group">
+                    <label>Category</label>
+                    <select id="categoryFilter" onchange="applyFilters()">
+                        <option value="">All Categories</option>
+                        <option value="cleaning">Cleaning Services</option>
+                        <option value="construction">Construction</option>
+                        <option value="repair">Repair & Maintenance</option>
+                        <option value="design">Design</option>
+                        <option value="coding">Coding & Development</option>
+                        <option value="content">Content Writing</option>
+                        <option value="tutoring">Tutoring</option>
+                        <option value="delivery">Delivery</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>Location</label>
+                    <input type="text" id="locationFilter" placeholder="Enter location" onchange="applyFilters()">
+                </div>
+
+                <div class="filter-group">
+                    <label>Hourly Rate (₹)</label>
+                    <input type="range" id="rateFilter" min="100" max="5000" value="5000" onchange="applyFilters()">
+                    <div style="text-align: center; margin-top: 8px; color: var(--primary); font-weight: 600;">
+                        Up to ₹<span id="rateValue">5000</span>/hr
+                    </div>
+                </div>
+
+                <div class="filter-group">
+                    <label>Duration</label>
+                    <div>
+                        <div class="filter-checkbox">
+                            <input type="checkbox" id="duration-same-day" value="same-day" onchange="applyFilters()">
+                            <label for="duration-same-day">Same Day</label>
+                        </div>
+                        <div class="filter-checkbox">
+                            <input type="checkbox" id="duration-few-days" value="few-days" onchange="applyFilters()">
+                            <label for="duration-few-days">Few Days</label>
+                        </div>
+                        <div class="filter-checkbox">
+                            <input type="checkbox" id="duration-one-week" value="one-week" onchange="applyFilters()">
+                            <label for="duration-one-week">1 Week</label>
+                        </div>
+                        <div class="filter-checkbox">
+                            <input type="checkbox" id="duration-ongoing" value="ongoing" onchange="applyFilters()">
+                            <label for="duration-ongoing">Ongoing</label>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="filter-btn" onclick="resetFilters()">Reset Filters</button>
+            </div>
+
+            <div class="jobs-section">
+                <div class="jobs-header">
+                    <div class="jobs-count">Showing <strong id="jobCount">0</strong> jobs</div>
+                    <div style="display: flex; gap: 12px;">
+                        <button id="viewToggleBtn" onclick="toggleView()" style="padding: 8px 16px; border: 2px solid var(--primary); border-radius: 6px; background: white; color: var(--primary); cursor: pointer; font-weight: 600;">Show Map View 🗺️</button>
+                        <select class="sort-dropdown" id="sortBy" onchange="applyFilters()">
+                            <option value="newest">Newest First</option>
+                            <option value="rate-high">Highest Rate</option>
+                            <option value="rate-low">Lowest Rate</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="mapContainer" style="display: none; height: 600px; border-radius: 12px; z-index: 1;"></div>
+                <div id="jobsContainer" class="loading-spinner">
+                    <p>Loading jobs...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script type="module" src="js/discover.js"></script>
+</body>
+</html>

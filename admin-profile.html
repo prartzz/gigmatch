@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GigMatch - Admin Profile</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .profile-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .profile-header .logo {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .profile-header h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .profile-header p {
+            color: #718096;
+            font-size: 14px;
+            margin: 0;
+        }
+
+        .admin-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            display: inline-block;
+            font-size: 12px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .admin-stats {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 30px 0;
+            border-left: 4px solid #667eea;
+        }
+
+        .admin-stats h3 {
+            margin-top: 0;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .stat-item {
+            display: inline-block;
+            margin-right: 30px;
+            margin-bottom: 10px;
+        }
+
+        .stat-item .label {
+            display: block;
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 5px;
+        }
+
+        .stat-item .value {
+            display: block;
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .danger-zone {
+            background: #fff5f5;
+            border: 1px solid #feb2b2;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+        }
+
+        .danger-zone h3 {
+            color: #c53030;
+            margin-top: 0;
+        }
+
+        .danger-zone p {
+            color: #744210;
+            font-size: 14px;
+            margin: 10px 0;
+        }
+
+        .btn-danger {
+            background: #f56565;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .btn-danger:hover {
+            background: #e53e3e;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="profile-header">
+            <div class="logo">⚙️</div>
+            <h1>Admin Profile</h1>
+            <p>Platform administration account</p>
+            <div class="admin-badge">👑 Administrator</div>
+        </div>
+
+        <!-- View Mode -->
+        <div id="viewMode" class="profile-view">
+            <div class="profile-info-card">
+                <div class="profile-info-header">
+                    <h2 id="displayName" style="margin: 0;">Loading...</h2>
+                    <button type="button" id="editBtn" class="btn btn-primary">✏️ Edit Profile</button>
+                </div>
+                
+                <div class="profile-info-grid">
+                    <div class="profile-info-item">
+                        <label>Full Name</label>
+                        <p id="displayFullName" style="margin: 0; color: #666;">-</p>
+                    </div>
+
+                    <div class="profile-info-item">
+                        <label>Email Address</label>
+                        <p id="displayEmail" style="margin: 0; color: #666;">-</p>
+                    </div>
+
+                    <div class="profile-info-item">
+                        <label>Phone Number</label>
+                        <p id="displayPhone" style="margin: 0; color: #666;">-</p>
+                    </div>
+
+                    <div class="profile-info-item">
+                        <label>Account Created</label>
+                        <p id="displayMemberSince" style="margin: 0; color: #666;">-</p>
+                    </div>
+
+                    <div class="profile-info-item">
+                        <label>Admin Since</label>
+                        <p id="displayAdminSince" style="margin: 0; color: #667eea; font-weight: bold;">-</p>
+                    </div>
+
+                    <div class="profile-info-item">
+                        <label>Account Status</label>
+                        <p id="displayStatus" style="margin: 0; color: #48bb78; font-weight: bold;">🟢 Active</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin Stats -->
+            <div class="admin-stats">
+                <h3>📊 Platform Statistics</h3>
+                <div class="stat-item">
+                    <span class="label">Total Users</span>
+                    <span class="value" id="totalUsers">-</span>
+                </div>
+                <div class="stat-item">
+                    <span class="label">Total Jobs</span>
+                    <span class="value" id="totalJobs">-</span>
+                </div>
+                <div class="stat-item">
+                    <span class="label">Total Complaints</span>
+                    <span class="value" id="totalComplaints">-</span>
+                </div>
+                <div class="stat-item">
+                    <span class="label">Total Applications</span>
+                    <span class="value" id="totalApplications">-</span>
+                </div>
+            </div>
+            
+            <a href="dashboard.html" class="btn btn-secondary btn-large" style="margin-top: 20px;">← Back to Dashboard</a>
+        </div>
+
+        <!-- Edit Mode -->
+        <div id="editMode" class="profile-edit" style="display: none;">
+            <form id="adminProfileForm">
+                <div class="form-group">
+                    <label for="fullName">Full Name</label>
+                    <input 
+                        type="text" 
+                        id="fullName" 
+                        placeholder="Your full name" 
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        placeholder="your@email.com" 
+                        disabled
+                    >
+                    <small class="helper-text">Email address cannot be changed</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input 
+                        type="tel" 
+                        id="phone" 
+                        placeholder="+91 XXXXX XXXXX"
+                    >
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-large">💾 Save Changes</button>
+                <button type="button" id="cancelBtn" class="btn btn-secondary btn-large">❌ Cancel</button>
+            </form>
+        </div>
+    </div>
+
+    <script type="module">
+        import { auth, db, getDoc, doc, updateDoc, getDocs, collection, query, where } from './firebase-config.js';
+
+        const viewMode = document.getElementById('viewMode');
+        const editMode = document.getElementById('editMode');
+        const editBtn = document.getElementById('editBtn');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const adminProfileForm = document.getElementById('adminProfileForm');
+
+        // Check if user is admin
+        auth.onAuthStateChanged(async (user) => {
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            try {
+                const userDoc = await getDoc(doc(db, 'users', user.uid));
+                if (!userDoc.exists() || userDoc.data().role !== 'admin') {
+                    alert('Access denied: Admin only');
+                    window.location.href = 'dashboard.html';
+                    return;
+                }
+
+                // Load admin profile
+                loadProfile(user, userDoc.data());
+                
+                // Load statistics
+                loadStatistics();
+
+            } catch (error) {
+                console.error('Error loading profile:', error);
+                alert('Error loading profile: ' + error.message);
+            }
+        });
+
+        async function loadProfile(user, userData) {
+            document.getElementById('displayName').textContent = userData.fullName || user.email;
+            document.getElementById('displayFullName').textContent = userData.fullName || '-';
+            document.getElementById('displayEmail').textContent = user.email;
+            document.getElementById('displayPhone').textContent = userData.mobileNumber || '-';
+            
+            const createdAt = userData.createdAt?.toDate?.() || new Date(userData.createdAt);
+            document.getElementById('displayMemberSince').textContent = createdAt.toLocaleDateString('en-IN');
+            document.getElementById('displayAdminSince').textContent = createdAt.toLocaleDateString('en-IN');
+
+            // Set form values
+            document.getElementById('fullName').value = userData.fullName || '';
+            document.getElementById('email').value = user.email;
+            document.getElementById('phone').value = userData.mobileNumber || '';
+        }
+
+        async function loadStatistics() {
+            try {
+                // Count users
+                const usersSnap = await getDocs(collection(db, 'users'));
+                document.getElementById('totalUsers').textContent = usersSnap.size;
+
+                // Count jobs
+                const jobsSnap = await getDocs(collection(db, 'jobs'));
+                document.getElementById('totalJobs').textContent = jobsSnap.size;
+
+                // Count complaints
+                const complaintsSnap = await getDocs(collection(db, 'complaints'));
+                document.getElementById('totalComplaints').textContent = complaintsSnap.size;
+
+                // Count applications
+                const applicationsSnap = await getDocs(collection(db, 'applications'));
+                document.getElementById('totalApplications').textContent = applicationsSnap.size;
+
+            } catch (error) {
+                console.error('Error loading statistics:', error);
+            }
+        }
+
+        // Edit button
+        editBtn.addEventListener('click', () => {
+            viewMode.style.display = 'none';
+            editMode.style.display = 'block';
+        });
+
+        // Cancel button
+        cancelBtn.addEventListener('click', () => {
+            editMode.style.display = 'none';
+            viewMode.style.display = 'block';
+        });
+
+        // Form submission
+        adminProfileForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const fullName = document.getElementById('fullName').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+
+            if (!fullName) {
+                alert('Please enter your full name');
+                return;
+            }
+
+            const submitBtn = adminProfileForm.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.textContent = '⏳ Saving...';
+
+            try {
+                await updateDoc(doc(db, 'users', auth.currentUser.uid), {
+                    fullName: fullName,
+                    mobileNumber: phone,
+                    updatedAt: new Date()
+                });
+
+                // Also update admins collection
+                await updateDoc(doc(db, 'admins', auth.currentUser.uid), {
+                    fullName: fullName,
+                    mobileNumber: phone,
+                    updatedAt: new Date()
+                });
+
+                alert('✅ Profile updated successfully!');
+                
+                // Reload profile
+                const userDoc = await getDoc(doc(db, 'users', auth.currentUser.uid));
+                loadProfile(auth.currentUser, userDoc.data());
+
+                editMode.style.display = 'none';
+                viewMode.style.display = 'block';
+
+            } catch (error) {
+                console.error('Error updating profile:', error);
+                alert('❌ Error updating profile: ' + error.message);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = '💾 Save Changes';
+            }
+        });
+    </script>
+</body>
+</html>

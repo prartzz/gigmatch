@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GigMatch - Worker Profile</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .profile-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .profile-header .logo {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .profile-header h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .profile-header p {
+            color: #718096;
+            font-size: 14px;
+            margin: 0;
+        }
+
+        .ratings-section {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 30px 0;
+            border-left: 4px solid #667eea;
+        }
+
+        .ratings-section h3 {
+            margin-top: 0;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .rating-stat {
+            display: inline-block;
+            margin-right: 30px;
+            margin-bottom: 10px;
+        }
+
+        .rating-stat .label {
+            display: block;
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 5px;
+        }
+
+        .rating-stat .value {
+            display: block;
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .category-ratings {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #ddd;
+        }
+
+        .category-ratings p {
+            margin: 8px 0;
+            font-size: 14px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="profile-header">
+            <div class="logo">👷</div>
+            <h1>Worker Profile</h1>
+            <p>Your professional information</p>
+        </div>
+
+        <!-- View Mode -->
+        <div id="viewMode" class="profile-view">
+            <div class="profile-info-card">
+                <div class="profile-info-header">
+                    <h2 id="displayName" style="margin: 0;">Loading...</h2>
+                    <button type="button" id="editBtn" class="btn btn-primary">✏️ Edit Profile</button>
+                </div>
+                
+                <div class="profile-info-grid">
+                    <div class="profile-info-item">
+                        <label>About You</label>
+                        <p id="displayBio" style="margin: 0; color: #666;">-</p>
+                    </div>
+
+                    <div class="profile-info-item">
+                        <label>Skills</label>
+                        <p id="displaySkills" style="margin: 0; color: #666;">-</p>
+                    </div>
+
+                    <div class="profile-info-item">
+                        <label>Experience</label>
+                        <p id="displayExperience" style="margin: 0; color: #666;">-</p>
+                    </div>
+
+                    <div class="profile-info-item">
+                        <label>Hourly Rate</label>
+                        <p id="displayRate" style="margin: 0; color: #666; font-weight: bold;">-</p>
+                    </div>
+
+                    <div class="profile-info-item">
+                        <label>Location</label>
+                        <p id="displayLocation" style="margin: 0; color: #666;">-</p>
+                    </div>
+
+                    <div class="profile-info-item">
+                        <label>Member Since</label>
+                        <p id="displayMemberSince" style="margin: 0; color: #666;">-</p>
+                    </div>
+                </div>
+            </div>
+            
+            <a href="dashboard.html" class="btn btn-secondary btn-large" style="margin-top: 20px;">← Back to Dashboard</a>
+        </div>
+
+        <!-- Edit Mode -->
+        <div id="editMode" class="profile-edit" style="display: none;">
+            <form id="workerProfileForm">
+            <div class="form-group">
+                <label for="fullName">Full Name</label>
+                <input type="text" id="fullName" placeholder="Your full name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="bio">About You</label>
+                <textarea id="bio" placeholder="Brief description of yourself and experience"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="skills">Skills (comma separated)</label>
+                <input 
+                    type="text" 
+                    id="skills" 
+                    placeholder="e.g., Painting, Welding, Carpentry" 
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="experience">Years of Experience</label>
+                <input 
+                    type="number" 
+                    id="experience" 
+                    placeholder="0" 
+                    min="0" 
+                    max="70"
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="hourlyRate">Expected Hourly Rate (₹)</label>
+                <input 
+                    type="number" 
+                    id="hourlyRate" 
+                    placeholder="250" 
+                    min="0" 
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="location">Location</label>
+                <input 
+                    type="text" 
+                    id="location" 
+                    placeholder="City or area (e.g., Bangalore)" 
+                    required
+                >
+            </div>
+
+                <button type="submit" class="btn btn-primary btn-large">💾 Save Profile</button>
+                <button type="button" id="cancelBtn" class="btn btn-secondary btn-large">Cancel</button>
+            </form>
+        </div>
+
+        <!-- Ratings Section -->
+        <div class="ratings-section" id="ratingsSection" style="display: none;">
+            <h3>⭐ Your Ratings</h3>
+            <div class="rating-stat">
+                <span class="label">Average Rating</span>
+                <span class="value" id="avgRating">-</span>
+            </div>
+            <div class="rating-stat">
+                <span class="label">Total Reviews</span>
+                <span class="value" id="totalReviews">0</span>
+            </div>
+            <div class="category-ratings" id="categoryRatings"></div>
+        </div>
+    </div>
+    <script type="module" src="js/profile.js"></script>
+</body>
+</html>

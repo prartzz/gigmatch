@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GigMatch - Job Details</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .job-detail-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .job-detail-header {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+        }
+
+        .job-detail-header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 20px;
+        }
+
+        .job-title-section h1 {
+            font-size: 32px;
+            margin: 0 0 8px 0;
+            color: var(--text-dark);
+        }
+
+        .job-title-section p {
+            margin: 0;
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        .job-action-btns {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-small {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .btn-primary-small {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-primary-small:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary-small {
+            background: white;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-secondary-small:hover {
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .job-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .stat {
+            text-align: center;
+            padding: 12px;
+            background: #f7fafc;
+            border-radius: 8px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-top: 4px;
+        }
+
+        .job-skills-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .skill-badge {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .job-details-content {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 24px;
+        }
+
+        .job-description-section,
+        .employer-card,
+        .job-application-section {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--text-dark);
+        }
+
+        .description-text {
+            color: var(--text-dark);
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        .info-item {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .info-item-icon {
+            font-size: 20px;
+            min-width: 24px;
+        }
+
+        .info-item-content {
+            flex: 1;
+        }
+
+        .info-item-label {
+            font-size: 12px;
+            color: var(--text-light);
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .info-item-value {
+            font-size: 16px;
+            color: var(--text-dark);
+            font-weight: 600;
+            margin-top: 4px;
+        }
+
+        .employer-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 32px;
+            margin-bottom: 16px;
+        }
+
+        .employer-name {
+            font-weight: 700;
+            font-size: 16px;
+            margin-bottom: 4px;
+            color: var(--text-dark);
+        }
+
+        .employer-rating {
+            color: var(--text-light);
+            font-size: 13px;
+            margin-bottom: 16px;
+        }
+
+        .stars {
+            color: #ffd700;
+        }
+
+        .view-profile-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 12px;
+        }
+
+        .view-profile-link:hover {
+            text-decoration: underline;
+        }
+
+        .application-form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .form-field {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-field label {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: var(--text-dark);
+        }
+
+        .form-field textarea {
+            padding: 10px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-field textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .apply-button {
+            padding: 14px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 12px;
+        }
+
+        .apply-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+        }
+
+        .apply-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .already-applied {
+            background: #90cdf4;
+            padding: 14px;
+            border-radius: 8px;
+            color: #2c5282;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .job-details-content {
+                grid-template-columns: 1fr;
+            }
+
+            .job-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .job-detail-header-top {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .job-title-section h1 {
+                font-size: 24px;
+            }
+
+            .job-detail-header {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body style="background: #f7fafc;">
+    <nav style="display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; background: white; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);">
+        <h1 style="margin: 0; font-size: 20px;">💼 GigMatch</h1>
+        <a href="jobs-discover.html" style="color: var(--primary); text-decoration: none; font-weight: 600;">← Back to Jobs</a>
+    </nav>
+
+    <div class="job-detail-container">
+        <a href="jobs-discover.html" class="back-link">← Back to Discover</a>
+
+        <div id="loadingContainer" style="display: none; text-align: center; padding: 40px;">
+            <p>Loading job details...</p>
+        </div>
+
+        <div id="jobDetailContent" style="display: none;">
+            <div class="job-detail-header">
+                <div class="job-detail-header-top">
+                    <div class="job-title-section">
+                        <h1 id="jobTitle"></h1>
+                        <p id="jobCategory"></p>
+                    </div>
+                    <div class="job-action-btns">
+                        <button class="btn-small btn-secondary-small" onclick="messageEmployer()">💬 Message</button>
+                        <button class="btn-small btn-secondary-small" onclick="toggleBookmark()">🔖 Bookmark</button>
+                        <button class="btn-small btn-secondary-small" onclick="shareJob()">📤 Share</button>
+                    </div>
+                </div>
+
+                <div class="job-stats">
+                    <div class="stat">
+                        <div class="stat-value" id="jobRate">₹0</div>
+                        <div class="stat-label">Hourly Rate</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value" id="jobDuration"></div>
+                        <div class="stat-label">Duration</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value" id="jobLocation"></div>
+                        <div class="stat-label">Location</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value" id="applicationCount">0</div>
+                        <div class="stat-label">Applications</div>
+                    </div>
+                </div>
+
+                <div class="job-skills-section" id="skillsContainer"></div>
+            </div>
+
+            <div class="job-details-content">
+                <div>
+                    <div class="job-description-section">
+                        <div class="section-title">Job Description</div>
+                        <p class="description-text" id="jobDescription"></p>
+                    </div>
+
+                    <div class="job-description-section" style="margin-top: 24px;">
+                        <div class="section-title">Essential Information</div>
+                        <div id="jobMeta"></div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="employer-card">
+                        <div class="section-title">About Employer</div>
+                        <div class="employer-avatar" id="employerAvatar"></div>
+                        <div class="employer-name" id="employerName"></div>
+                        <div class="employer-rating">
+                            <span class="stars">★★★★★</span> 4.8/5
+                        </div>
+                        <p style="font-size: 13px; color: var(--text-light); line-height: 1.6;" id="employerDescription">
+                            Verified employer with 50+ completed projects
+                        </p>
+                        <a href="#" class="view-profile-link">View Employer Profile →</a>
+                        <button class="btn-small btn-secondary-small" style="width: 100%; margin-top: 12px;" onclick="fileComplaint()">🚨 Report Issue</button>
+                    </div>
+
+                    <div class="job-application-section" style="margin-top: 24px;">
+                        <div class="section-title">Apply for this Job</div>
+                        <form id="applicationForm" class="application-form" onsubmit="submitApplication(event)">
+                            <div class="form-field">
+                                <label>Cover Letter</label>
+                                <textarea id="coverLetter" placeholder="Tell the employer why you're a great fit for this job..." required></textarea>
+                            </div>
+                            <button type="submit" class="apply-button">Apply Now</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="errorContainer" style="display: none; background: #fed7d7; color: #742a2a; padding: 20px; border-radius: 8px; text-align: center;">
+            <p id="errorMessage"></p>
+        </div>
+    </div>
+
+    <script type="module" src="js/job-detail.js"></script>
+</body>
+</html>

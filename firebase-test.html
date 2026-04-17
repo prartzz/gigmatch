@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firebase Connection Test - GigMatch</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .test-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        .test-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .test-header h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .test-header p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .test-section {
+            margin-bottom: 24px;
+            padding: 16px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .test-section h3 {
+            color: #333;
+            font-size: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .test-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 0;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .test-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .test-icon.loading {
+            background: #ffc107;
+            color: white;
+        }
+
+        .test-icon.success {
+            background: #28a745;
+            color: white;
+        }
+
+        .test-icon.error {
+            background: #dc3545;
+            color: white;
+        }
+
+        .test-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+
+        .btn-secondary:hover {
+            background: #e8e8e8;
+        }
+
+        .console-output {
+            background: #1e1e1e;
+            color: #00ff00;
+            padding: 16px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 20px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            line-height: 1.4;
+        }
+
+        .console-output.error {
+            color: #ff6b6b;
+        }
+
+        .console-output.success {
+            color: #51cf66;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #667eea;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 12px;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #1565c0;
+            margin-bottom: 20px;
+        }
+
+        .info-box strong {
+            display: block;
+            margin-bottom: 6px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="test-header">
+            <h1>🔥 Firebase Connection Test</h1>
+            <p>GigMatch - Connection Status Checker</p>
+        </div>
+
+        <div class="info-box">
+            <strong>ℹ️ How to use:</strong>
+            Click the "Run Tests" button to check if Firebase is properly connected. Check your browser console (F12) for detailed logs.
+        </div>
+
+        <div class="test-section">
+            <h3>📋 Connection Status</h3>
+            <div class="test-item">
+                <div class="test-icon loading">
+                    <div class="spinner"></div>
+                </div>
+                <span>Firebase App Initialization</span>
+                <span class="test-status" id="status-init">
+                    <span class="status-badge status-pending">Pending</span>
+                </span>
+            </div>
+            <div class="test-item">
+                <div class="test-icon loading">
+                    <div class="spinner"></div>
+                </div>
+                <span>Authentication Module</span>
+                <span class="test-status" id="status-auth">
+                    <span class="status-badge status-pending">Pending</span>
+                </span>
+            </div>
+            <div class="test-item">
+                <div class="test-icon loading">
+                    <div class="spinner"></div>
+                </div>
+                <span>Firestore Database</span>
+                <span class="test-status" id="status-firestore">
+                    <span class="status-badge status-pending">Pending</span>
+                </span>
+            </div>
+            <div class="test-item">
+                <div class="test-icon loading">
+                    <div class="spinner"></div>
+                </div>
+                <span>Network Connectivity</span>
+                <span class="test-status" id="status-network">
+                    <span class="status-badge status-pending">Pending</span>
+                </span>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>🔧 Configuration</h3>
+            <div class="test-item">
+                <strong>Project ID:</strong> gigmatch-20012026
+            </div>
+            <div class="test-item">
+                <strong>Auth Domain:</strong> gigmatch-20012026.firebaseapp.com
+            </div>
+            <div class="test-item">
+                <strong>Storage Bucket:</strong> gigmatch-20012026.firebasestorage.app
+            </div>
+        </div>
+
+        <div class="console-output" id="consoleOutput">Ready for testing...</div>
+
+        <div class="buttons">
+            <button class="btn btn-primary" id="runTests">Run Tests</button>
+            <button class="btn btn-secondary" id="clearConsole">Clear Console</button>
+        </div>
+    </div>
+
+    <script type="module">
+        const consoleOutput = document.getElementById('consoleOutput');
+        let logs = [];
+
+        // Override console.log to capture output
+        const originalLog = console.log;
+        const originalError = console.error;
+
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            const message = args.map(arg => 
+                typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
+            ).join(' ');
+            logs.push(message);
+            updateConsole();
+        };
+
+        console.error = function(...args) {
+            originalError.apply(console, args);
+            const message = args.map(arg => 
+                typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
+            ).join(' ');
+            logs.push(message);
+            updateConsole();
+        };
+
+        // Import Firebase config directly
+        let auth, db, analytics;
+        try {
+            const firebaseModule = await import('./js/firebase-config.js');
+            auth = firebaseModule.auth;
+            db = firebaseModule.db;
+            analytics = firebaseModule.analytics;
+            console.log('✅ Firebase modules imported successfully');
+        } catch (error) {
+            console.error('❌ Failed to import Firebase modules:', error.message);
+            console.error('Stack:', error.stack);
+        }
+
+        function updateConsole() {
+            consoleOutput.textContent = logs.join('\n');
+            consoleOutput.scrollTop = consoleOutput.scrollHeight;
+        }
+
+        function updateStatus(statusId, passed) {
+            const statusEl = document.getElementById(statusId);
+            const badge = statusEl.querySelector('.status-badge');
+            
+            if (passed) {
+                badge.className = 'status-badge status-success';
+                badge.textContent = '✅ Success';
+            } else {
+                badge.className = 'status-badge status-error';
+                badge.textContent = '❌ Failed';
+            }
+        }
+
+        // Test functions
+        function testAppInitialization() {
+            try {
+                if (!auth || !db || !analytics) {
+                    console.error('❌ Firebase Initialization Error: One or more services failed to initialize');
+                    console.error('   Auth:', auth ? '✅' : '❌');
+                    console.error('   Firestore:', db ? '✅' : '❌');
+                    console.error('   Analytics:', analytics ? '✅' : '❌');
+                    return false;
+                }
+                
+                console.log('✅ Firebase App Initialized');
+                console.log('   Auth Module:', auth ? 'Ready' : 'Not Ready');
+                console.log('   Firestore Module:', db ? 'Ready' : 'Not Ready');
+                console.log('   Analytics Module:', analytics ? 'Ready' : 'Not Ready');
+                return true;
+            } catch (error) {
+                console.error('❌ Firebase Initialization Error:', error.message);
+                return false;
+            }
+        }
+
+        function testAuthConnection() {
+            try {
+                if (!auth) {
+                    console.error('❌ Auth not initialized');
+                    return false;
+                }
+                
+                console.log('✅ Firebase Authentication Connected');
+                console.log('   Auth State:', auth.currentUser ? 'User logged in' : 'No user logged in');
+                console.log('   Auth Language:', auth.languageCode || 'Default');
+                
+                return true;
+            } catch (error) {
+                console.error('❌ Auth Connection Error:', error.message);
+                return false;
+            }
+        }
+
+        async function testFirestoreConnection() {
+            try {
+                if (!db) {
+                    console.error('❌ Firestore not initialized');
+                    return false;
+                }
+                
+                console.log('✅ Firestore Connected');
+                console.log('   Database:', db.type === 'firestore' ? 'Firestore' : 'Unknown');
+                console.log('   Project ID:', db.app?.options?.projectId || 'Unknown');
+                
+                return true;
+            } catch (error) {
+                console.error('❌ Firestore Connection Error:', error.message);
+                return false;
+            }
+        }
+
+        async function testNetworkConnectivity() {
+            try {
+                console.log('🌐 Testing Network Connectivity...');
+                
+                const response = await fetch('https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js', {
+                    mode: 'no-cors'
+                });
+                
+                console.log('✅ Network Connection: OK');
+                console.log('   Can reach Firebase CDN: Yes');
+                return true;
+            } catch (error) {
+                console.error('❌ Network Connection Error:', error.message);
+                console.log('   Possible causes: No internet, firewall blocked, CDN down');
+                return false;
+            }
+        }
+
+        document.getElementById('runTests').addEventListener('click', async () => {
+            logs = [];
+            consoleOutput.textContent = 'Running tests...';
+            
+            // Reset all statuses
+            ['init', 'auth', 'firestore', 'network'].forEach(id => {
+                const statusEl = document.getElementById(`status-${id}`);
+                const badge = statusEl.querySelector('.status-badge');
+                badge.className = 'status-badge status-pending';
+                badge.textContent = '⏳ Testing...';
+            });
+
+            try {
+                console.log('🔍 Firebase Connection Tests Started...');
+                console.log('═'.repeat(50));
+                
+                const results = {
+                    appInit: testAppInitialization(),
+                    auth: testAuthConnection(),
+                    firestore: await testFirestoreConnection(),
+                    network: await testNetworkConnectivity()
+                };
+                
+                console.log('═'.repeat(50));
+                
+                const allPassed = Object.values(results).every(r => r === true);
+                if (allPassed) {
+                    console.log('✅ ALL TESTS PASSED - Firebase is ready!');
+                } else {
+                    console.log('⚠️ Some tests failed - Check the errors above');
+                }
+                
+                // Update UI based on results
+                updateStatus('status-init', results.appInit);
+                updateStatus('status-auth', results.auth);
+                updateStatus('status-firestore', results.firestore);
+                updateStatus('status-network', results.network);
+
+            } catch (error) {
+                console.error('Test execution error:', error);
+                console.error('Stack:', error.stack);
+                updateStatus('status-init', false);
+                updateStatus('status-auth', false);
+                updateStatus('status-firestore', false);
+                updateStatus('status-network', false);
+            }
+        });
+
+        document.getElementById('clearConsole').addEventListener('click', () => {
+            logs = [];
+            consoleOutput.textContent = 'Console cleared.';
+        });
+
+        // Auto-run tests on page load
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('runTests').click();
+            }, 500);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GigMatch - Register</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            animation: slideUp 0.4s ease-out;
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 32px;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .form-header .logo {
+            font-size: 56px;
+            margin-bottom: 16px;
+            display: inline-block;
+            animation: bounce 2s infinite;
+        }
+
+        .form-header h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+            color: var(--text-dark);
+            font-weight: 800;
+            letter-spacing: -0.01em;
+        }
+
+        .form-header p {
+            color: var(--text-light);
+            font-size: 14px;
+            margin: 0;
+        }
+
+        .form-group {
+            animation: slideInRight 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-light);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="form-header">
+            <div class="logo">💼</div>
+            <h1>Join GigMatch</h1>
+            <p>Get started in just 3 steps</p>
+        </div>
+
+        <form id="registerForm">
+            <div class="form-group">
+                <label for="fullName">Full Name</label>
+                <input 
+                    type="text" 
+                    id="fullName" 
+                    placeholder="Your full name" 
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input 
+                    type="email" 
+                    id="email" 
+                    placeholder="your@email.com" 
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input 
+                    type="password" 
+                    id="password" 
+                    placeholder="Min. 8 characters" 
+                    required
+                >
+                <small class="helper-text">Must contain uppercase letter and number</small>
+            </div>
+
+            <div class="form-group">
+                <label for="userType">I am a...</label>
+                <select id="userType" required>
+                    <option value="">-- Select your role --</option>
+                    <option value="worker">💼 Worker (Looking for jobs)</option>
+                    <option value="employer">🏢 Employer (Hiring workers)</option>
+                    <option id="adminOption" value="admin" style="display: none;">🔑 Admin Setup</option>
+                </select>
+            </div>
+
+            <div id="adminCodeGroup" class="form-group" style="display: none;">
+                <label for="adminCode">Admin Setup Code</label>
+                <input 
+                    type="password" 
+                    id="adminCode" 
+                    placeholder="Enter admin code" 
+                >
+                <small class="helper-text">This code is required to create an admin account</small>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-large">Create Account</button>
+        </form>
+
+        <div class="login-link">
+            Already have an account? <a href="login.html">Sign in</a>
+        </div>
+    </div>
+    <script type="module" src="js/auth.js"></script>
+</body>
+</html>

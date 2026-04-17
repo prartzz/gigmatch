@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Complaint - GigMatch</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #667eea;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .warning-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 25px;
+            font-size: 14px;
+            color: #856404;
+        }
+
+        .warning-box strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .form-help {
+            color: #999;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .message {
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: none;
+            font-size: 14px;
+        }
+
+        .error {
+            background: #fee;
+            color: #c33;
+        }
+
+        .success {
+            background: #efe;
+            color: #3c3;
+        }
+
+        .info-box {
+            background: #f0f8ff;
+            border-left: 4px solid #667eea;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            color: #333;
+            margin-top: 15px;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 25px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="javascript:history.back()" class="back-link">← Back</a>
+
+        <div class="header">
+            <h1>🚨 File Complaint</h1>
+            <p>Report an issue with this job</p>
+        </div>
+
+        <div class="message" id="errorMsg"></div>
+        <div class="message" id="successMsg"></div>
+
+        <div class="warning-box">
+            <strong>⚠️ Important</strong>
+            Please provide accurate details. False complaints may result in account suspension.
+        </div>
+
+        <form id="complaintForm">
+            <!-- Job Selection (if not from job detail) -->
+            <div class="form-group" id="jobSelectionGroup" style="display: none;">
+                <label for="jobId">Select Job</label>
+                <select id="jobId" name="jobId">
+                    <option value="">-- Select a job --</option>
+                </select>
+                <div class="form-help">Select the job this complaint is related to</div>
+            </div>
+
+            <!-- Complaint Reason -->
+            <div class="form-group">
+                <label for="reason">Reason for Complaint</label>
+                <select id="reason" name="reason" required>
+                    <option value="">-- Select a reason --</option>
+                    <option value="payment_not_released">Payment Not Released</option>
+                    <option value="job_not_completed">Job Not Completed</option>
+                    <option value="poor_quality">Poor Quality Work</option>
+                    <option value="unprofessional_behavior">Unprofessional Behavior</option>
+                    <option value="safety_concern">Safety Concern</option>
+                    <option value="fraud">Fraud/Scam</option>
+                    <option value="harassment">Harassment/Abuse</option>
+                    <option value="other">Other</option>
+                </select>
+                <div class="form-help">Select the main reason for your complaint</div>
+            </div>
+
+            <!-- Defendant User ID (hidden) -->
+            <input type="hidden" id="defendantUserId" name="defendantUserId">
+
+            <!-- Description -->
+            <div class="form-group">
+                <label for="description">Detailed Description</label>
+                <textarea id="description" name="description" placeholder="Please provide detailed information about the issue..." required></textarea>
+                <div class="form-help">Include dates, times, and specific incidents. Be as detailed as possible.</div>
+            </div>
+
+            <!-- Evidence URLs -->
+            <div class="form-group">
+                <label for="evidence">Evidence (Optional)</label>
+                <textarea id="evidence" name="evidence" placeholder="Paste URLs to screenshots, chat logs, or other evidence (one per line)"></textarea>
+                <div class="form-help">Add links to supporting documents or evidence</div>
+            </div>
+
+            <!-- Info Box -->
+            <div class="info-box">
+                <strong>ℹ️ What happens next?</strong><br>
+                1. Your complaint will be reviewed by our team<br>
+                2. We'll contact both parties for more information<br>
+                3. A resolution will be determined within 5-7 business days<br>
+                4. You'll receive updates via email
+            </div>
+
+            <!-- Buttons -->
+            <div class="button-group">
+                <button type="button" class="btn btn-secondary" onclick="window.history.back()">Cancel</button>
+                <button type="submit" class="btn btn-primary">Submit Complaint</button>
+            </div>
+        </form>
+    </div>
+
+    <script src="js/firebase-config.js"></script>
+    <script src="js/complaint.js"></script>
+
+    <script>
+        document.getElementById('complaintForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            submitComplaint();
+        });
+    </script>
+</body>
+</html>
