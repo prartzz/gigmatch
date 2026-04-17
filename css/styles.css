@@ -527,11 +527,11 @@ a:hover {
 }
 
 /* ========================================
-   MODERN DARK SAAS FOOTER
+   LUXURY OLD MONEY FOOTER
    ======================================== */
 .modern-dark-footer {
-    background-color: #0F172A; /* Slate 900 */
-    color: #94A3B8; /* Slate 400 */
+    background-color: #2A2420; /* Deep Luxury Brown */
+    color: #BAA68F; /* Muted Gold/Tan */
     padding: 60px 40px 20px 40px;
     width: 100vw;
     margin-top: auto; /* Push to bottom of flex body */
@@ -547,9 +547,10 @@ a:hover {
 }
 
 .modern-footer-brand h2 {
-    color: #F8FAFC; /* Slate 50 */
+    color: #FDFBF7; /* Light Warm White */
     font-size: 24px;
     margin-bottom: 16px;
+    font-weight: 800;
 }
 
 .modern-footer-brand p {
@@ -564,19 +565,20 @@ a:hover {
 }
 
 .modern-social a {
-    color: #38BDF8; /* Light Blue */
+    color: #8C7355; /* Warm Tan/Gold */
     transition: color 0.2s, transform 0.2s;
 }
 
 .modern-social a:hover {
-    color: #E0F2FE;
+    color: #D5C7B7; /* Lighter Tan */
     transform: translateY(-2px);
 }
 
 .modern-footer-col h3 {
-    color: #F8FAFC;
+    color: #FDFBF7;
     font-size: 18px;
     margin-bottom: 20px;
+    font-weight: 700;
 }
 
 .modern-footer-links {
@@ -590,14 +592,14 @@ a:hover {
 }
 
 .modern-footer-links a {
-    color: #94A3B8;
+    color: #BAA68F;
     text-decoration: none;
     transition: color 0.2s;
     font-size: 16px;
 }
 
 .modern-footer-links a:hover {
-    color: #38BDF8;
+    color: #8C7355;
 }
 
 .newsletter-box p {
@@ -613,9 +615,9 @@ a:hover {
 }
 
 .newsletter-input input {
-    background: #1E293B; /* Slate 800 */
-    border: 1px solid #334155; /* Slate 700 */
-    color: #F8FAFC;
+    background: #3A322D; /* Lighter Brown */
+    border: 1px solid #5A4D41;
+    color: #FDFBF7;
     padding: 12px 16px;
     border-radius: 8px;
     outline: none;
@@ -623,29 +625,32 @@ a:hover {
 }
 
 .newsletter-input input:focus {
-    border-color: #38BDF8;
+    border-color: #8C7355;
+    background: #463c35;
 }
 
 .newsletter-input button {
-    background: #3B82F6; /* Blue 500 */
-    color: white;
+    background: linear-gradient(135deg, #8C7355 0%, #5C4033 100%);
+    color: #FDFBF7;
     border: none;
     padding: 12px 16px;
     border-radius: 8px;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: transform 0.2s, box-shadow 0.2s;
     font-weight: bold;
+    box-shadow: 0 4px 10px rgba(92, 64, 51, 0.4);
 }
 
 .newsletter-input button:hover {
-    background: #2563EB; /* Blue 600 */
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(92, 64, 51, 0.6);
 }
 
 .modern-footer-bottom {
     max-width: 1200px;
     margin: 0 auto;
     padding-top: 24px;
-    border-top: 1px solid #1E293B;
+    border-top: 1px solid #5A4D41;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -658,13 +663,13 @@ a:hover {
 }
 
 .bottom-links a {
-    color: #94A3B8;
+    color: #BAA68F;
     text-decoration: none;
     transition: color 0.2s;
 }
 
 .bottom-links a:hover {
-    color: #F8FAFC;
+    color: #FDFBF7;
 }
 
 @media (max-width: 900px) {
