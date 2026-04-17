@@ -7,50 +7,48 @@
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/auth-redesign.css">
 </head>
-<body class="split-layout">
-    <div class="split-image-side">
-        <div class="image-overlay">
-            <div class="brand-showcase">
-                <div class="logo-large">💼</div>
-                <h2>GigMatch</h2>
-                <p>Welcome to the ultimate platform bridging skilled professionals with top opportunities in the Gig Economy.</p>
-            </div>
+<body class="video-bg-layout">
+    <!-- Professional background video (relevant to Gig Economy / Business) -->
+    <video autoplay loop muted playsinline id="bg-video">
+        <source src="https://videos.pexels.com/video-files/3129957/3129957-uhd_3840_2160_25fps.mp4" type="video/mp4">
+    </video>
+
+    <!-- Overlay to ensure text readability -->
+    <div class="video-overlay"></div>
+
+    <div class="glass-container center-login-box">
+        <div class="form-header">
+            <div class="logo-large" style="text-align: center; font-size: 48px; margin-bottom: 10px;">💼</div>
+            <h1 style="text-align: center;">GigMatch</h1>
+            <p style="text-align: center; margin-bottom: 24px;">Sign in to continue your journey</p>
         </div>
-    </div>
-    <div class="split-form-side">
-        <div class="glass-container">
-            <div class="form-header">
-                <h1>Welcome Back</h1>
-                <p>Sign in to continue your journey</p>
+
+        <form id="loginForm">
+            <div class="form-group custom-input-group">
+                <label for="email">Email Address</label>
+                <input 
+                    type="email" 
+                    id="email" 
+                    placeholder="your@email.com" 
+                    required
+                >
             </div>
 
-            <form id="loginForm">
-                <div class="form-group custom-input-group">
-                    <label for="email">Email Address</label>
-                    <input 
-                        type="email" 
-                        id="email" 
-                        placeholder="your@email.com" 
-                        required
-                    >
-                </div>
-
-                <div class="form-group custom-input-group">
-                    <label for="password">Password</label>
-                    <input 
-                        type="password" 
-                        id="password" 
-                        placeholder="Enter your password" 
-                        required
-                    >
-                </div>
-
-                <button type="submit" class="btn btn-primary btn-large btn-glow">Sign In</button>
-            </form>
-
-            <div class="login-link">
-                Don't have an account? <a href="mobile-register.html">Create one</a>
+            <div class="form-group custom-input-group">
+                <label for="password">Password</label>
+                <input 
+                    type="password" 
+                    id="password" 
+                    placeholder="Enter your password" 
+                    required
+                >
             </div>
+
+            <button type="submit" class="btn btn-primary btn-large btn-glow" style="width: 100%; margin-top: 10px;">Sign In</button>
+        </form>
+
+        <div class="login-link" style="margin-top: 30px;">
+            Don't have an account? <a href="mobile-register.html">Create one</a>
         </div>
     </div>
     <script type="module" src="js/auth.js"></script>

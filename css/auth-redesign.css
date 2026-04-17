@@ -313,3 +313,64 @@ body.full-bg .progress-step.active {
 body.full-bg .progress-line {
     background: #E0D5C1;
 }
+/* ========================================
+   FULLSCREEN VIDEO BACKGROUND LAYOUT
+   ======================================== */
+body.video-bg-layout {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    position: relative;
+    overflow: hidden;
+    background-color: var(--light-bg);
+}
+
+#bg-video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    transform: translate(-50%, -50%);
+    z-index: -2;
+    object-fit: cover;
+    filter: brightness(0.85);
+}
+
+.video-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(135deg, rgba(42, 36, 32, 0.45) 0%, rgba(92, 64, 51, 0.3) 100%);
+    z-index: -1;
+}
+
+.center-login-box {
+    margin: 20px;
+    background: rgba(253, 251, 247, 0.88); /* Frosty beige */
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+    border-radius: 32px;
+    max-width: 420px;
+    width: 100%;
+    padding: 50px 40px;
+    z-index: 1;
+    animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.center-login-box .form-header h1 {
+    color: #2A2420;
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+}
+
+.center-login-box .form-header p {
+    color: #8B7D6B;
+}
+
