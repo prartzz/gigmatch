@@ -1,7 +1,7 @@
 // Firebase Configuration using Modular SDK
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, sendEmailVerification, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
-import { getFirestore, collection, addDoc, getDocs, doc, getDoc, setDoc, updateDoc, deleteDoc, query, where, orderBy, limit, Timestamp, onSnapshot } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, getDocs, doc, getDoc, setDoc, updateDoc, deleteDoc, query, where, orderBy, limit, Timestamp, onSnapshot, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 
 // Firebase project credentials from Firebase Console
 // GigMatch Project Configuration
@@ -80,5 +80,5 @@ export {
     createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, sendEmailVerification, RecaptchaVerifier, signInWithPhoneNumber,
     // Firestore functions
     collection, addDoc, getDocs, doc, getDoc, setDoc, updateDoc, deleteDoc,
-    query, where, orderBy, limit, Timestamp, onSnapshot
+    query, where, orderBy, limit, Timestamp, onSnapshot, arrayUnion, arrayRemove
 };

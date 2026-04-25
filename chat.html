@@ -209,8 +209,21 @@
             flex-shrink: 0;
         }
 
+        .message-wrapper {
+            max-width: 70%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .message.sent .message-wrapper {
+            align-items: flex-end;
+        }
+
+        .message.received .message-wrapper {
+            align-items: flex-start;
+        }
+
         .message-bubble {
-            max-width: 60%;
             padding: 12px 16px;
             border-radius: 12px;
             word-wrap: break-word;
@@ -546,8 +559,8 @@
 
                 console.log('[Chat] Conversation loaded:', { otherName, jobTitle: convData.jobTitle });
 
-                // Update header
-                document.getElementById('chatTitle').textContent = `Chat with ${escapeHtml(otherName)} - ${escapeHtml(convData.jobTitle || 'Job')}`;
+                // Update header (textContent handles escaping automatically)
+                document.getElementById('chatTitle').textContent = `Chat with ${otherName} - ${convData.jobTitle || 'Job'}`;
 
                 // Update active state
                 document.querySelectorAll('.conversation-item').forEach(item => {
@@ -558,14 +571,14 @@
                 }
 
                 // Load messages
-                loadMessages(conversationId);
+                loadMessages(conversationId, otherName);
             } catch (error) {
                 console.error('[Chat] Error selecting conversation:', error);
             }
         };
 
         // Load messages with real-time listener
-        function loadMessages(conversationId) {
+        function loadMessages(conversationId, otherName) {
             const chatContent = document.getElementById('chatContent');
             
             // Remove previous listener
@@ -579,7 +592,7 @@
                 let html = `
                     <div class="messages-area" id="messagesContainer">
                         <div class="chat-info-bar">
-                            <h3>Chat with ${escapeHtml(snapshot.docs.length > 0 ? 'messages' : 'no messages yet')}</h3>
+                            <h3>Chat with ${escapeHtml(otherName)}</h3>
                             <div class="chat-status">
                                 <div class="status-dot"></div>
                                 <span>Online</span>
@@ -605,7 +618,7 @@
                         html += `
                             <div class="message ${isOwn ? 'sent' : 'received'}">
                                 ${!isOwn ? `<div class="message-avatar">${escapeHtml(msg.senderName.charAt(0).toUpperCase())}</div>` : ''}
-                                <div>
+                                <div class="message-wrapper">
                                     <div class="message-bubble">${escapeHtml(msg.message)}</div>
                                     <div class="message-time">${time}</div>
                                 </div>

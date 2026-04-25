@@ -156,6 +156,9 @@
             transition: all 0.3s ease;
             cursor: pointer;
             border-left: 4px solid transparent;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
         }
 
         .job-card:hover {
@@ -212,6 +215,7 @@
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
+            flex-grow: 1;
         }
 
         .job-card-meta {
@@ -305,6 +309,43 @@
             min-height: 300px;
         }
 
+        #jobsContainer {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            align-items: stretch;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 24px;
+            padding: 20px 0;
+            width: 100%;
+        }
+
+        .page-btn {
+            padding: 8px 16px;
+            border: 1px solid #e2e8f0;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            color: var(--text-dark);
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .page-btn.active {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+        }
+
+        .page-btn:hover:not(.active) {
+            background: #f7fafc;
+        }
+
         @media (max-width: 768px) {
             .discover-layout {
                 grid-template-columns: 1fr;
@@ -344,6 +385,13 @@
         <div class="discover-layout">
             <div class="filters-panel">
                 <h3>Filters</h3>
+
+                <div class="filter-group" style="background: #fdfbf7; padding: 12px; border-radius: 8px; border: 1px solid #D5C7B7;">
+                    <div class="filter-checkbox" style="margin: 0;">
+                        <input type="checkbox" id="savedFilter" onchange="applyFilters()">
+                        <label for="savedFilter" style="font-weight: 600; color: var(--text-dark);">🔖 Saved Jobs Only</label>
+                    </div>
+                </div>
 
                 <div class="filter-group">
                     <label>Category</label>
@@ -415,6 +463,7 @@
                 <div id="jobsContainer" class="loading-spinner">
                     <p>Loading jobs...</p>
                 </div>
+                <div id="paginationContainer" class="pagination"></div>
             </div>
         </div>
     </div>

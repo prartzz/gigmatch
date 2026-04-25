@@ -3,54 +3,169 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GigMatch - Login</title>
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/auth-redesign.css">
+    <title>GigMatch - Login & Register</title>
+    <link rel="stylesheet" href="css/sliding-auth.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="video-bg-layout">
-    <!-- Professional background video (relevant to Gig Economy / Business) -->
-    <video autoplay loop muted playsinline id="bg-video">
-        <source src="https://videos.pexels.com/video-files/3129957/3129957-uhd_3840_2160_25fps.mp4" type="video/mp4">
-    </video>
+<body class="sliding-bg-layout">
 
-    <!-- Overlay to ensure text readability -->
-    <div class="video-overlay"></div>
-
-    <div class="glass-container center-login-box">
-        <div class="form-header">
-            <div class="logo-large" style="text-align: center; font-size: 48px; margin-bottom: 10px;">💼</div>
-            <h1 style="text-align: center;">GigMatch</h1>
-            <p style="text-align: center; margin-bottom: 24px;">Sign in to continue your journey</p>
+    <div class="sliding-container" id="container">
+        <!-- REGISTRATION FORM -->
+        <div class="form-container sign-up-container">
+            <form id="registerForm">
+                <div style="font-size: 40px; margin-bottom: 5px;">💼</div>
+                <h1>Create Account</h1>
+                <div class="social-container">
+                    <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social"><i class="fab fa-google"></i></a>
+                    <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+                <span>or use your email for registration</span>
+                
+                <input type="text" id="fullName" placeholder="Full Name" required />
+                <input type="email" id="email" placeholder="Email" required />
+                <input type="password" id="password" placeholder="Password" required />
+                
+                <select id="userType" required>
+                    <option value="" disabled selected>Select Role</option>
+                    <option value="worker">Worker (Looking for Jobs)</option>
+                    <option value="employer">Employer (Posting Jobs)</option>
+                    <option value="admin">Platform Admin</option>
+                </select>
+                
+                <div class="admin-code-group" id="adminCodeGroup">
+                    <input type="password" id="adminCode" placeholder="Enter Admin Secret Code" />
+                </div>
+                
+                <button type="submit" style="margin-top: 15px;">Sign Up</button>
+            </form>
         </div>
 
-        <form id="loginForm">
-            <div class="form-group custom-input-group">
-                <label for="email">Email Address</label>
-                <input 
-                    type="email" 
-                    id="email" 
-                    placeholder="your@email.com" 
-                    required
-                >
+        <!-- LOGIN FORM -->
+        <div class="form-container sign-in-container">
+            <form id="loginForm">
+                <div style="font-size: 40px; margin-bottom: 5px;">💼</div>
+                <h1>Sign in</h1>
+                <div class="social-container">
+                    <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social"><i class="fab fa-google"></i></a>
+                    <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+                <span>or use your account</span>
+                
+                <input type="email" id="loginEmail" placeholder="Email" required />
+                <input type="password" id="loginPassword" placeholder="Password" required />
+                
+                <a href="#">Forgot your password?</a>
+                <button type="submit">Sign In</button>
+            </form>
+        </div>
+
+        <!-- SLIDING OVERLAY -->
+        <div class="overlay-container">
+            <div class="overlay">
+                <!-- Left Panel (Shows when viewing Register, invites to Sign In) -->
+                <div class="overlay-panel overlay-left">
+                    <h2>Welcome Back!</h2>
+                    <p>To keep connected with us please login with your personal info</p>
+                    <button class="ghost" id="signInToggle">Sign In</button>
+                </div>
+                <!-- Right Panel (Shows when viewing Login, invites to Sign Up) -->
+                <div class="overlay-panel overlay-right">
+                    <h2>Hello, Friend!</h2>
+                    <p>Enter your personal details and start your journey with us</p>
+                    <button class="ghost" id="signUpToggle">Sign Up</button>
+                </div>
             </div>
-
-            <div class="form-group custom-input-group">
-                <label for="password">Password</label>
-                <input 
-                    type="password" 
-                    id="password" 
-                    placeholder="Enter your password" 
-                    required
-                >
-            </div>
-
-            <button type="submit" class="btn btn-primary btn-large btn-glow" style="width: 100%; margin-top: 10px;">Sign In</button>
-        </form>
-
-        <div class="login-link" style="margin-top: 30px;">
-            Don't have an account? <a href="mobile-register.html">Create one</a>
         </div>
     </div>
-    <script type="module" src="js/auth.js"></script>
+
+    <!-- UI Logic for Sliding Panel -->
+    <script>
+        const signUpButton = document.getElementById('signUpToggle');
+        const signInButton = document.getElementById('signInToggle');
+        const container = document.getElementById('container');
+
+        signUpButton.addEventListener('click', () => {
+            container.classList.add("right-panel-active");
+        });
+
+        signInButton.addEventListener('click', () => {
+            container.classList.remove("right-panel-active");
+        });
+        
+        // Handle admin code input visibility
+        const userTypeSelect = document.getElementById('userType');
+        const adminCodeGroup = document.getElementById('adminCodeGroup');
+        userTypeSelect.addEventListener('change', (e) => {
+            if(e.target.value === 'admin') {
+                adminCodeGroup.style.display = 'block';
+            } else {
+                adminCodeGroup.style.display = 'none';
+            }
+        });
+    </script>
+
+    <!-- Firebase Auth Logic -->
+    <!-- We must remap the IDs since we used 'loginEmail' and 'loginPassword' to prevent conflicts with the register form IDs -->
+    <script type="module">
+        import { auth, db, waitForFirebase, createUserWithEmailAndPassword, signInWithEmailAndPassword, collection, doc, setDoc } from './js/firebase-config.js';
+        
+        const ADMIN_CODE = 'ADMIN2026';
+        
+        waitForFirebase().then(() => {
+            const loginForm = document.getElementById('loginForm');
+            loginForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const email = document.getElementById('loginEmail').value;
+                const password = document.getElementById('loginPassword').value;
+                try {
+                    await signInWithEmailAndPassword(auth, email, password);
+                    window.location.href = 'dashboard.html';
+                } catch (error) {
+                    alert('Login failed: ' + error.message);
+                }
+            });
+
+            const registerForm = document.getElementById('registerForm');
+            registerForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                const fullName = document.getElementById('fullName').value;
+                const userType = document.getElementById('userType').value;
+                
+                try {
+                    if (userType === 'admin') {
+                        const adminCode = document.getElementById('adminCode').value.trim();
+                        if (adminCode !== ADMIN_CODE) {
+                            alert('❌ Invalid admin code.');
+                            return;
+                        }
+                    }
+                    const result = await createUserWithEmailAndPassword(auth, email, password);
+                    const userData = {
+                        fullName: fullName,
+                        userType: userType === 'admin' ? 'admin' : userType,
+                        email: email,
+                        createdAt: new Date()
+                    };
+                    if (userType === 'admin') userData.role = 'admin';
+                    
+                    await setDoc(doc(db, 'users', result.user.uid), userData);
+                    
+                    if (userType === 'admin') {
+                        alert('✅ Admin account created successfully!');
+                        window.location.href = 'dashboard.html';
+                    } else {
+                        alert('Registration successful! Please sign in.');
+                        container.classList.remove("right-panel-active"); // slide back to login
+                    }
+                } catch (error) {
+                    alert('Registration failed: ' + error.message);
+                }
+            });
+        });
+    </script>
 </body>
 </html>

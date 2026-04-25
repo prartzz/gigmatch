@@ -1,8 +1,9 @@
-import { auth, db, waitForFirebase, doc, getDoc, collection, addDoc, query, where, getDocs, Timestamp, updateDoc } from './firebase-config.js';
+import { auth, db, waitForFirebase, doc, getDoc, collection, addDoc, query, where, getDocs, Timestamp, updateDoc, arrayUnion, arrayRemove } from './firebase-config.js';
 
 let currentJobId = null;
 let currentJob = null;
 let hasApplied = false;
+let isBookmarked = false;
 
 // Initialize
 document.addEventListener('DOMContentLoaded', async () => {
@@ -38,7 +39,7 @@ async function loadJobDetails() {
         currentJob = jobSnap.data();
         currentJob.id = jobSnap.id;
 
-        // Check if user already applied
+        // Check if user already applied and if job is bookmarked
         if (auth.currentUser) {
             const applicationsRef = collection(db, 'applications');
             const q = query(
@@ -48,6 +49,16 @@ async function loadJobDetails() {
             );
             const snapshot = await getDocs(q);
             hasApplied = !snapshot.empty;
+            
+            // Check bookmarks
+            const userRef = doc(db, 'users', auth.currentUser.uid);
+            const userSnap = await getDoc(userRef);
+            if (userSnap.exists()) {
+                const userData = userSnap.data();
+                if (userData.bookmarkedJobs && userData.bookmarkedJobs.includes(currentJobId)) {
+                    isBookmarked = true;
+                }
+            }
         }
 
         renderJobDetails();
@@ -129,6 +140,20 @@ function renderJobDetails() {
 
     // Application form
     renderApplicationSection();
+
+    // Update bookmark button style
+    const bookmarkBtn = document.querySelector('button[onclick="toggleBookmark()"]');
+    if (bookmarkBtn) {
+        if (isBookmarked) {
+            bookmarkBtn.innerHTML = '★ Bookmarked';
+            bookmarkBtn.classList.add('btn-primary-small');
+            bookmarkBtn.classList.remove('btn-secondary-small');
+        } else {
+            bookmarkBtn.innerHTML = '🔖 Bookmark';
+            bookmarkBtn.classList.add('btn-secondary-small');
+            bookmarkBtn.classList.remove('btn-primary-small');
+        }
+    }
 }
 
 function renderApplicationSection() {
@@ -248,8 +273,33 @@ window.submitApplication = async function(e) {
     }
 };
 
-window.toggleBookmark = function() {
-    alert('🔖 Job bookmarked! (Feature coming soon)');
+window.toggleBookmark = async function() {
+    if (!auth.currentUser) {
+        window.location.href = 'login.html';
+        return;
+    }
+
+    try {
+        const userRef = doc(db, 'users', auth.currentUser.uid);
+        
+        if (isBookmarked) {
+            await updateDoc(userRef, {
+                bookmarkedJobs: arrayRemove(currentJobId)
+            });
+            isBookmarked = false;
+        } else {
+            await updateDoc(userRef, {
+                bookmarkedJobs: arrayUnion(currentJobId)
+            });
+            isBookmarked = true;
+        }
+        
+        // Re-render button state
+        renderJobDetails();
+    } catch (error) {
+        console.error('Error toggling bookmark:', error);
+        alert('Failed to update bookmark: ' + error.message);
+    }
 };
 
 window.shareJob = function() {

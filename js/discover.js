@@ -1,16 +1,48 @@
-import { auth, db, waitForFirebase, collection, query, where, getDocs, orderBy, limit } from './firebase-config.js';
+import { auth, db, waitForFirebase, collection, query, where, getDocs, orderBy, limit, doc, getDoc } from './firebase-config.js';
 
 let allJobs = [];
 let filteredJobs = [];
 let isMapView = false;
 let map = null;
 let markers = [];
+let userBookmarks = [];
+
+// Pagination State
+let currentPage = 1;
+const jobsPerPage = 8;
+
+// Geocoding Cache to prevent hitting API limits
+const geocodeCache = {
+    'bangalore': { lat: 12.9716, lng: 77.5946 },
+    'bengaluru': { lat: 12.9716, lng: 77.5946 },
+    'mumbai': { lat: 19.0760, lng: 72.8777 },
+    'delhi': { lat: 28.7041, lng: 77.1025 },
+    'new delhi': { lat: 28.7041, lng: 77.1025 },
+    'hyderabad': { lat: 17.3850, lng: 78.4867 },
+    'chennai': { lat: 13.0827, lng: 80.2707 },
+    'pune': { lat: 18.5204, lng: 73.8567 },
+    'kolkata': { lat: 22.5726, lng: 88.3639 }
+};
 
 // Initialize
 document.addEventListener('DOMContentLoaded', async () => {
     try {
         await waitForFirebase();
         console.log('[Discover] Firebase ready, loading jobs...');
+
+        // Fetch user bookmarks if logged in
+        if (auth.currentUser) {
+            try {
+                const userRef = doc(db, 'users', auth.currentUser.uid);
+                const userSnap = await getDoc(userRef);
+                if (userSnap.exists()) {
+                    userBookmarks = userSnap.data().bookmarkedJobs || [];
+                }
+            } catch (e) {
+                console.error('Failed to load bookmarks', e);
+            }
+        }
+
         await loadJobs();
     } catch (error) {
         console.error('[Discover] Error waiting for Firebase:', error);
@@ -97,25 +129,33 @@ async function loadJobs() {
 function renderJobs() {
     const jobsContainer = document.getElementById('jobsContainer');
     const jobCount = document.getElementById('jobCount');
+    const paginationContainer = document.getElementById('paginationContainer');
 
     jobCount.textContent = filteredJobs.length;
 
     if (filteredJobs.length === 0) {
         jobsContainer.innerHTML = `
-            <div class="no-jobs">
+            <div class="no-jobs" style="grid-column: 1 / -1;">
                 <div class="no-jobs-icon">🔍</div>
                 <h3>No jobs found</h3>
                 <p>Try adjusting your filters to find more opportunities</p>
             </div>
         `;
+        if (paginationContainer) paginationContainer.innerHTML = '';
         return;
     }
 
-    jobsContainer.innerHTML = filteredJobs.map(job => `
+    const startIndex = (currentPage - 1) * jobsPerPage;
+    const paginatedJobs = filteredJobs.slice(startIndex, startIndex + jobsPerPage);
+
+    jobsContainer.innerHTML = paginatedJobs.map(job => `
         <div class="job-card" onclick="openJobDetail('${job.id}')">
             <div class="job-card-header">
                 <div class="job-card-title">
-                    <h3>${escapeHtml(job.title)}</h3>
+                    <h3>
+                        ${escapeHtml(job.title)}
+                        ${userBookmarks.includes(job.id) ? '<span style="color: #ecc94b; margin-left: 8px;" title="Bookmarked">★</span>' : ''}
+                    </h3>
                     <p>${escapeHtml(job.category)} • ${job.daysAgo === 0 ? 'Today' : job.daysAgo + ' days ago'}</p>
                 </div>
                 <div class="job-card-rate">
@@ -149,10 +189,41 @@ function renderJobs() {
         </div>
     `).join('');
 
+    renderPagination();
+
     if (isMapView) {
-        updateMapMarkers();
+        updateMapMarkers(paginatedJobs);
     }
 }
+
+function renderPagination() {
+    const paginationContainer = document.getElementById('paginationContainer');
+    if (!paginationContainer) return;
+    
+    const totalPages = Math.ceil(filteredJobs.length / jobsPerPage);
+    
+    if (totalPages <= 1) {
+        paginationContainer.innerHTML = '';
+        return;
+    }
+
+    let html = '';
+    for (let i = 1; i <= totalPages; i++) {
+        html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+    }
+    
+    if (currentPage < totalPages) {
+        html += `<button class="page-btn" onclick="goToPage(${currentPage + 1})">Next &raquo;</button>`;
+    }
+    
+    paginationContainer.innerHTML = html;
+}
+
+window.goToPage = function(page) {
+    currentPage = page;
+    renderJobs();
+    document.querySelector('.discover-header').scrollIntoView({ behavior: 'smooth' });
+};
 
 window.toggleView = function() {
     isMapView = !isMapView;
@@ -166,7 +237,10 @@ window.toggleView = function() {
         mapContainer.style.display = 'block';
         if (!map) initMap();
         else map.invalidateSize();
-        updateMapMarkers();
+        
+        const startIndex = (currentPage - 1) * jobsPerPage;
+        const paginatedJobs = filteredJobs.slice(startIndex, startIndex + jobsPerPage);
+        updateMapMarkers(paginatedJobs);
     } else {
         viewToggleBtn.textContent = 'Show Map View 🗺️';
         jobsContainer.style.display = 'flex';
@@ -183,7 +257,7 @@ function initMap() {
     }).addTo(map);
 }
 
-function updateMapMarkers() {
+async function updateMapMarkers(jobsToShow) {
     if (!map) return;
     
     // Clear existing markers
@@ -192,10 +266,37 @@ function updateMapMarkers() {
 
     const bounds = L.latLngBounds();
 
-    filteredJobs.forEach((job, index) => {
-        // If job doesn't have lat/lng, generate a random offset around Bangalore for demo purposes
-        const lat = job.lat || (12.9716 + (Math.random() - 0.5) * 0.2);
-        const lng = job.lng || (77.5946 + (Math.random() - 0.5) * 0.2);
+    for (const job of jobsToShow) {
+        let lat = job.lat;
+        let lng = job.lng;
+        
+        if (!lat || !lng) {
+            const locKey = job.location.toLowerCase().split(',')[0].trim();
+            if (geocodeCache[locKey]) {
+                // Use cache with slight offset to prevent exact overlapping of multiple jobs in same city
+                lat = geocodeCache[locKey].lat + (Math.random() - 0.5) * 0.05;
+                lng = geocodeCache[locKey].lng + (Math.random() - 0.5) * 0.05;
+            } else {
+                try {
+                    // Fetch real coordinates from Nominatim OpenStreetMap API
+                    const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(job.location)}`);
+                    const data = await response.json();
+                    
+                    if (data && data.length > 0) {
+                        lat = parseFloat(data[0].lat);
+                        lng = parseFloat(data[0].lon);
+                        geocodeCache[locKey] = { lat, lng }; // Store in cache for future
+                    } else {
+                        // Fallback to Bangalore if API fails to find it
+                        lat = 12.9716 + (Math.random() - 0.5) * 0.1;
+                        lng = 77.5946 + (Math.random() - 0.5) * 0.1;
+                    }
+                } catch (error) {
+                    console.error("Geocoding API error for", job.location, error);
+                    lat = 12.9716; lng = 77.5946;
+                }
+            }
+        }
         
         const marker = L.marker([lat, lng]).addTo(map);
         marker.bindPopup(`
@@ -208,7 +309,7 @@ function updateMapMarkers() {
         `);
         markers.push(marker);
         bounds.extend([lat, lng]);
-    });
+    }
 
     if (markers.length > 0) {
         map.fitBounds(bounds, { padding: [50, 50] });
@@ -221,6 +322,9 @@ window.applyFilters = function() {
     const location = document.getElementById('locationFilter').value.trim().toLowerCase();
     const maxRate = parseInt(document.getElementById('rateFilter').value) || 5000;
     const sort = document.getElementById('sortBy').value;
+    
+    const savedFilterCb = document.getElementById('savedFilter');
+    const showSavedOnly = savedFilterCb ? savedFilterCb.checked : false;
 
     // Get checked duration filters
     const durations = [];
@@ -235,6 +339,11 @@ window.applyFilters = function() {
 
     // Apply filters
     filteredJobs = allJobs.filter(job => {
+        // Saved filter
+        if (showSavedOnly && !userBookmarks.includes(job.id)) {
+            return false;
+        }
+
         // Category filter
         if (category && job.category.toLowerCase() !== category.toLowerCase()) {
             return false;
@@ -263,6 +372,9 @@ window.applyFilters = function() {
 
     console.log(`[Discover] Filtered to ${filteredJobs.length} jobs from ${allJobs.length}`);
 
+    // Reset to page 1 when filters change
+    currentPage = 1;
+
     // Apply sorting
     if (sort === 'newest') {
         filteredJobs.sort((a, b) => {
@@ -285,6 +397,9 @@ window.resetFilters = function() {
     document.getElementById('rateFilter').value = '5000';
     document.getElementById('rateValue').textContent = '5000';
     document.getElementById('sortBy').value = 'newest';
+
+    const savedFilterCb = document.getElementById('savedFilter');
+    if (savedFilterCb) savedFilterCb.checked = false;
 
     ['same-day', 'few-days', 'one-week', 'ongoing'].forEach(dur => {
         const elem = document.getElementById(`duration-${dur}`);
